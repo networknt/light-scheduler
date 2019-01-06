@@ -20,7 +20,7 @@ Here are some of the use cases:
 * Polling - Schedule a Cron job to be executed at some specified frequency
 * Workflow - Distributed workflow with state suspensions and resumptions
 * Batch jobs - This is the basic functionality of enterprise scheduler
-
+* Execution Window - Event must be scheduled in the next valid window. For example, from 9 to 5. If retry falls out of execution window, it must be executed in the next execution window. 
 
 ### Requirement
 
@@ -45,4 +45,29 @@ For the consumer node, it also constantly scan the key/value store per minute to
 
 If delivery fails, the scanner will reschedule the delivery again in the next minute. It is configurable on how many minutes to scan in the past. 
 
+
+##### Event  Injection and Event Execution
+
+By using Kafka, we have a distinct separation of event injection and execution so that each side can be scaled independently given the use cases and workload. 
+
+There are two interfaces for the event injection: Kafka producer and REST API and both of them must support transactions to ensure that no event is lost. 
+
+For the event injection, the limitation is the throughput of Kafka producer and it is linearly scalable. Of cause, the limitation is the network throughput in the end. 
+
+For the event execution, we are going to provide Kotlin based executors for most of the use cases with coroutine built-in. This is much more efficient than Java thread as it is lightweight and non-blocking. It would be very easy to support up to a million task executions in commodity hardware. 
+
+Along with standard task executors, we can push the execution event to one or more topics that some microservices subscribed. In this case, the task is executed , but we need a way to track the status. We can also invoke an API to execute task synchronously from REST executor. 
+
+##### Chaining of Event
+
+In some of the use cases, several related jobs must be executed in sequence or a pre-defined order. It might be too much for the scheduler to handle this at the injection phase; however, it would be easy to create a microservices or just a customized executor to handle this kind of particular requirement. 
+
+##### Logging, Tracing and Auditing
+
+The entire inject/execute chain is transactional and the status must be updated once the job is executed successfully or failed to close the loop. We also need to provide a dashboard to give the user an interface to monitor and report the scheduler activities. 
+
+
+##### File Watcher Injector
+
+For most of the enterprise schedulers which are based on batch jobs, we need to support the smooth migration. That means we need to have a special injector that can monitor one or more specific directories in the filesystem and pick up a file that contains a list of tasks. We need to define a standard format for the file and provide examples for convertor implementation that can be easily injected with service.yml config. Eventually, the events will be injected to the Kafka input topic through Kafka producer or a REST API. This particular injector can be built as a light-4j microservice or a daemon process. 
 
