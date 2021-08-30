@@ -71,3 +71,41 @@ The entire inject/execute chain is transactional and the status must be updated 
 
 For most of the enterprise schedulers which are based on batch jobs, we need to support the smooth migration. That means we need to have a special injector that can monitor one or more specific directories in the filesystem and pick up a file that contains a list of tasks. We need to define a standard format for the file and provide examples for convertor implementation that can be easily injected with service.yml config. Eventually, the events will be injected to the Kafka input topic through Kafka producer or a REST API. This particular injector can be built as a light-4j microservice or a daemon process. 
 
+
+### Build and Start
+
+The scaffolded project contains a single module. A fat jar server.jar will be generated in target directory after running the build command below.
+
+```
+./mvnw clean install -Prelease
+```
+
+With the fatjar in the server/target directory, you can start the server with the following command.
+
+```
+java -jar server/target/server.jar
+```
+
+To speed up the test, you can avoid the fat jar generation and start the server from Maven.
+
+```
+./mvnw clean install exec:exec
+```
+
+
+
+
+### Test
+
+By default, the OAuth2 JWT security verification is disabled, so you can use Curl or Postman to test your service right after the server is started. For example, the petstore API has the following endpoint.
+
+```
+curl -k https://localhost:8443/v1/pets
+```
+
+For your API, you need to change the path to match your specifications.
+
+### Tutorial
+
+To explore more features, please visit the [petstore tutorial](https://doc.networknt.com/tutorial/rest/openapi/petstore/).
+

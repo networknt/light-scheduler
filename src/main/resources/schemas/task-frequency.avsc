@@ -1,0 +1,9 @@
+{
+  "namespace": "com.networknt.scheduler",
+  "type": "record",
+  "name": "TaskFrequency",
+  "fields": [
+    {"name": "timeUnit", "type": "TimeUnit"},
+    {"name": "time", "type": "int"}
+  ]
+}

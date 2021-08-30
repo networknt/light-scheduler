@@ -1,0 +1,193 @@
+---
+openapi: "3.0.0"
+info:
+  title: "Light-scheduler REST microservice"
+  version: "1.0.0"
+  description: "# light-scheduler implementation with Kafka streams"
+servers:
+- url: "https://scheduler.networknt.com"
+paths:
+  /schedulers:
+    post:
+      operationId: "createScheduleTask"
+      summary: "Create a new schedule task definition"
+      requestBody:
+        description: "task definition"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskDefinition"
+      responses:
+        "200":
+          description: "Schedule task definition created."
+        "400":
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+      security:
+      - scheduler_auth:
+        - "sched:w"
+    get:
+      operationId: "getScheduleTaskDefinitions"
+      summary: "Get a list of schedule task definitions."
+      responses:
+        "200":
+          description: "Successful response"
+        "400":
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+      security:
+      - scheduler_auth:
+        - "sched:r"
+  /schedulers/{id}:
+    get:
+      operationId: "getTaskDefinitionById"
+      summary: "Get a schedule task definition by Id"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        description: "Task Definition Id with host and task name"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskDefinition"
+        "400":
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+      security:
+      - scheduler_auth:
+        - "sched:r"
+    put:
+      operationId: "updateTaskDefinitionById"
+      summary: "Update a task definition by Id"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        description: "Task Definition Id with host and task name"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Successful response"
+        "400":
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+      security:
+      - scheduler_auth:
+        - "sched:w"
+    delete:
+      operationId: "deleteTaskDefinitionById"
+      summary: "Delete a task definition by Id"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        description: "Task Definition Id with host and task name"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "Successful response"
+        "400":
+          description: "Unexpected error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+      security:
+      - scheduler_auth:
+        - "sched:w"
+components:
+  securitySchemes:
+    scheduler_auth:
+      type: "oauth2"
+      description: "This API uses OAuth 2.0 with the client credential grant flow."
+      flows:
+        clientCredentials:
+          tokenUrl: "https://localhost:6882/token"
+          scopes:
+            sched:w: "Scheduler Write"
+            sched:r: "Scheduler Read"
+  schemas:
+    Status:
+      type: "object"
+      properties:
+        statusCode:
+          description: "HTTP response code"
+          type: "integer"
+        code:
+          description: "Code is the machine-readable error code"
+          type: "string"
+        message:
+          description: "Error messsage"
+          type: "string"
+        description:
+          description: "The detailed description of the error status"
+          type: "string"
+      required:
+      - "statusCode"
+      - "code"
+    TaskDefinition:
+      type: "object"
+      properties:
+        host:
+          description: "host that the task is issued."
+          type: "string"
+        name:
+          description: "unique task name within the host"
+          type: "string"
+        frequency:
+          $ref: "#/components/schemas/TaskFrequency"
+        topic:
+          description: "output topic the task needs to be sent out"
+          type: "string"
+        data:
+          $ref: "#/components/schemas/TaskExecution"
+      required:
+      - "host"
+      - "name"
+      - "frequency"
+      - "topic"
+    TaskExecution:
+      type: "object"
+      description: "additional data in a map of string for task execution"
+      additionalProperties: true
+    TaskFrequency:
+      type: "object"
+      properties:
+        timeUnit:
+          $ref: "#/components/schemas/TimeUnit"
+        time:
+          description: "number of frequency unit for the time"
+          type: "integer"
+      required:
+      - "timeUnit"
+      - "time"
+    TimeUnit:
+      type: "string"
+      enum:
+      - "MILLISECONDS"
+      - "SECONDS"
+      - "MINUTES"
+      - "HOURS"
+      - "DAYS"
+      - "WEEKS"
