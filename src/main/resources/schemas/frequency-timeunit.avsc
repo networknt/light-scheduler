@@ -1,0 +1,6 @@
+{
+  "namespace": "com.networknt.scheduler",
+  "type": "enum",
+  "name": "TimeUnit",
+  "symbols": ["MILLISECONDS", "SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS"]
+}
