@@ -1,7 +1,5 @@
 package com.networknt.scheduler.handler;
 
-import com.networknt.body.BodyHandler;
-import com.networknt.config.Config;
 import com.networknt.scheduler.service.SchedulersIdDeleteService;
 import com.networknt.handler.LightHttpHandler;
 import com.networknt.http.HttpMethod;
