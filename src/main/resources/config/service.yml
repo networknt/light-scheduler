@@ -19,12 +19,9 @@ singletons:
   - com.networknt.cluster.LightCluster
 # StartupHookProvider implementations, there are one to many and they are called in the same sequence defined.
 - com.networknt.server.StartupHookProvider:
-  
-  
+  - com.networknt.scheduler.SchedulerStartupHook
 # ShutdownHookProvider implementations, there are one to many and they are called in the same sequence defined.
 - com.networknt.server.ShutdownHookProvider:
-  
-  
-
-
-
+  - com.networknt.scheduler.SchedulerShutdownHook
+- com.networknt.kafka.producer.NativeLightProducer:
+  - com.networknt.kafka.producer.SidecarProducer

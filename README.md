@@ -97,10 +97,38 @@ To speed up the test, you can avoid the fat jar generation and start the server 
 
 ### Test
 
+Before runing the test, you need to start the confluent platform locally. You can use the docker-compose from the kafka-sidecar repository. 
+
+```
+cd ~/networknt/kafka-sidecar
+docker-compose up -d
+```
+
+Create the following topics for the scheduler from the control center.
+
+```
+light-scheduler 16 partitions
+controller-health-check 16 partitions
+```
+
 By default, the OAuth2 JWT security verification is disabled, so you can use Curl or Postman to test your service right after the server is started. For example, the petstore API has the following endpoint.
 
 ```
-curl -k https://localhost:8443/v1/pets
+curl -k --location --request POST 'https://localhost:8443/schedulers' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "host": "networknt.com",
+    "name": "market-192.168.1.1-health-check",
+    "frequency": {
+      "timeUnit": "MINUTES",
+      "time": 2
+    },
+    "topic": "controller-health-check",
+    "data": {
+      "key1": "value1",
+      "key2": "value2"
+    }
+}'
 ```
 
 For your API, you need to change the path to match your specifications.

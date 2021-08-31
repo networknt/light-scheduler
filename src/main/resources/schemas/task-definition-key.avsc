@@ -1,0 +1,9 @@
+{
+  "namespace": "com.networknt.scheduler",
+  "type": "record",
+  "name": "TaskDefinitionKey",
+  "fields": [
+    {"name": "host","type": "string"},
+    {"name": "name","type": "string"}
+  ]
+}
