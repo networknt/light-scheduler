@@ -33,13 +33,13 @@ public class SchedulerStreams implements LightStreams {
 
     @Override
     public void start(String ip, int port) {
-        if(logger.isDebugEnabled()) logger.debug("ServiceStreams is starting...");
+        if(logger.isDebugEnabled()) logger.info("ServiceStreams is starting...");
         startSchedulerStreams(ip, port);
     }
 
     @Override
     public void close() {
-        if(logger.isDebugEnabled()) logger.debug("ServiceStreams is closing...");
+        if(logger.isDebugEnabled()) logger.info("ServiceStreams is closing...");
         schedulerStreams.close();
     }
 

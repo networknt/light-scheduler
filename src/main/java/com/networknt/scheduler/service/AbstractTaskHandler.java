@@ -86,10 +86,9 @@ public abstract class AbstractTaskHandler implements TaskHandler, Punctuator {
         final KeyValueIterator<TaskDefinitionKey, TaskDefinition> all = taskDefinitionStore.all();
         while (all.hasNext()) {
             final KeyValue<TaskDefinitionKey, TaskDefinition> next = all.next();
-            if(logger.isInfoEnabled()) logger.info("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
+            if(logger.isInfoEnabled()) logger.debug("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
             this.processorContext.forward(next.key, next.value);
         }
-
         all.close();
     }
 }

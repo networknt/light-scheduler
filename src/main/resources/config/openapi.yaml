@@ -9,8 +9,8 @@ servers:
 paths:
   /schedulers:
     post:
-      operationId: "createScheduleTask"
-      summary: "Create a new schedule task definition"
+      operationId: "sendScheduleTask"
+      summary: "Send a new schedule task definition to input topic"
       requestBody:
         description: "task definition"
         required: true
@@ -20,7 +20,7 @@ paths:
               $ref: "#/components/schemas/TaskDefinition"
       responses:
         "200":
-          description: "Schedule task definition created."
+          description: "Schedule task definition sent."
         "400":
           description: "Unexpected error"
           content:
@@ -33,9 +33,34 @@ paths:
     get:
       operationId: "getScheduleTaskDefinitions"
       summary: "Get a list of schedule task definitions."
+      parameters:
+      - name: "host"
+        in: "query"
+        required: true
+        description: "Task definition host"
+        schema:
+          type: "string"
+      - name: "name"
+        in: "query"
+        required: true
+        description: "Task definition name"
+        schema:
+          type: "string"
+      - name: "unit"
+        in: "query"
+        required: true
+        description: "Task definition time unit"
+        schema:
+          type: "string"
       responses:
         "200":
           description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TaskDefinition"
         "400":
           description: "Unexpected error"
           content:
@@ -45,95 +70,6 @@ paths:
       security:
       - scheduler_auth:
         - "sched:r"
-  /schedulers/{host}/{name}:
-    get:
-      operationId: "getTaskDefinitionById"
-      summary: "Get a schedule task definition by Id"
-      parameters:
-      - name: "host"
-        in: "path"
-        required: true
-        description: "Task definition host"
-        schema:
-          type: "string"
-      - name: "name"
-        in: "path"
-        required: true
-        description: "Task definition name"
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TaskDefinition"
-        "400":
-          description: "Unexpected error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Status"
-      security:
-      - scheduler_auth:
-        - "sched:r"
-    put:
-      operationId: "updateTaskDefinitionById"
-      summary: "Update a task definition by Id"
-      parameters:
-      - name: "host"
-        in: "path"
-        required: true
-        description: "Task definition host"
-        schema:
-          type: "string"
-      - name: "name"
-        in: "path"
-        required: true
-        description: "Task definition name"
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "Successful response"
-        "400":
-          description: "Unexpected error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Status"
-      security:
-      - scheduler_auth:
-        - "sched:w"
-    delete:
-      operationId: "deleteTaskDefinitionByHostName"
-      summary: "Delete a task definition by host and name"
-      parameters:
-      - name: "host"
-        in: "path"
-        required: true
-        description: "Task definition host"
-        schema:
-          type: "string"
-      - name: "name"
-        in: "path"
-        required: true
-        description: "Task definition name"
-        schema:
-          type: "string"
-      responses:
-        "200":
-          description: "Successful response"
-        "400":
-          description: "Unexpected error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Status"
-      security:
-      - scheduler_auth:
-        - "sched:w"
 components:
   securitySchemes:
     scheduler_auth:
@@ -210,7 +146,6 @@ components:
       - "MINUTES"
       - "HOURS"
       - "DAYS"
-      - "WEEKS"
     DefinitionAction:
       type: "string"
       enum:
