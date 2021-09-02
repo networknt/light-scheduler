@@ -1,6 +1,8 @@
 package com.networknt.scheduler.handler;
 
-import com.networknt.scheduler.service.SchedulersIdGetService;
+import com.networknt.body.BodyHandler;
+import com.networknt.config.Config;
+import com.networknt.scheduler.service.SchedulersHostNamePutService;
 import com.networknt.handler.LightHttpHandler;
 import com.networknt.http.HttpMethod;
 import com.networknt.http.RequestEntity;
@@ -15,11 +17,11 @@ import java.util.Map;
 For more information on how to write business handlers, please check the link below.
 https://doc.networknt.com/development/business-handler/rest/
 */
-public class SchedulersIdGetHandler implements LightHttpHandler {
-    SchedulersIdGetService service;
+public class SchedulersHostNamePutHandler implements LightHttpHandler {
+    SchedulersHostNamePutService service;
 
-    public SchedulersIdGetHandler () {
-        this.service = new SchedulersIdGetService ();
+    public SchedulersHostNamePutHandler () {
+        this.service = new SchedulersHostNamePutService ();
     }
 
     

@@ -113,12 +113,15 @@ controller-health-check 16 partitions
 
 By default, the OAuth2 JWT security verification is disabled, so you can use Curl or Postman to test your service right after the server is started. For example, the petstore API has the following endpoint.
 
+To add a new task definition. 
+
 ```
 curl -k --location --request POST 'https://localhost:8443/schedulers' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "host": "networknt.com",
     "name": "market-192.168.1.1-health-check",
+    "action": "INSERT",
     "frequency": {
       "timeUnit": "MINUTES",
       "time": 2
@@ -131,6 +134,49 @@ curl -k --location --request POST 'https://localhost:8443/schedulers' \
 }'
 ```
 
+To update an existing task definition
+
+```
+curl -k --location --request POST 'https://localhost:8443/schedulers' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "host": "networknt.com",
+    "name": "market-192.168.1.1-health-check",
+    "action": "UPDATE",
+    "frequency": {
+      "timeUnit": "MINUTES",
+      "time": 2
+    },
+    "topic": "controller-health-check",
+    "data": {
+      "key1": "value1",
+      "key2": "value2"
+    }
+}'
+
+```
+
+To delete an existing task definition
+
+```
+curl -k --location --request POST 'https://localhost:8443/schedulers' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "host": "networknt.com",
+    "name": "market-192.168.1.1-health-check",
+    "action": "DELETE",
+    "frequency": {
+      "timeUnit": "MINUTES",
+      "time": 2
+    },
+    "topic": "controller-health-check",
+    "data": {
+      "key1": "value1",
+      "key2": "value2"
+    }
+}'
+
+```
 For your API, you need to change the path to match your specifications.
 
 ### Tutorial

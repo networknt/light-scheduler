@@ -1,5 +1,6 @@
 package com.networknt.scheduler.service;
 
+import com.networknt.scheduler.DefinitionAction;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import com.networknt.scheduler.TaskDefinition;
@@ -38,31 +39,30 @@ public class TaskManager {
          * If the new and old frequency are not same, remove from the old store and add the same to
          * new and correct store.
          */
-        for (TaskHandler taskHandler: taskHandlers.values()) {
-            TaskDefinition prvTaskDefinition = taskHandler.get(taskDefinitionKey);
-
-            if (Objects.nonNull(prvTaskDefinition)) {
-                if (taskDefinition.getFrequency().getTimeUnit() == prvTaskDefinition.getFrequency().getTimeUnit()) {
+//        for (TaskHandler taskHandler: taskHandlers.values()) {
+//            TaskDefinition prvTaskDefinition = taskHandler.get(taskDefinitionKey);
+//
+//            if (Objects.nonNull(prvTaskDefinition)) {
+//                if (taskDefinition.getFrequency().getTimeUnit() == prvTaskDefinition.getFrequency().getTimeUnit()) {
                     /**
                      * There is no change in the frequency but some other params might have been changed.
                      * Hence we need to update the same in the same store
                      */
-                    taskHandler.add(taskDefinitionKey, taskDefinition);
-                    return KeyValue.pair(taskDefinitionKey, taskDefinition);
-                } else {
+//                    taskHandler.add(taskDefinitionKey, taskDefinition);
+//                    return KeyValue.pair(taskDefinitionKey, taskDefinition);
+//                } else {
                     /**
                      * Looks like the frequency changed along with some data.
                      * Need to remove the same from the current store and allow the same to be updated
                      */
-                    taskHandler.delete(taskDefinitionKey);
-                    break;
-                }
-            }
-        }
+//                    taskHandler.delete(taskDefinitionKey);
+//                    break;
+//                }
+//            }
+//        }
 
         switch (frequencyTimeUnit) {
             case DAYS:
-            case WEEKS:
                 this.taskHandlers.get(TimeUnit.DAYS).add(taskDefinitionKey, taskDefinition);
                 break;
 
@@ -75,7 +75,19 @@ public class TaskManager {
                 break;
 
             case MINUTES:
-                this.taskHandlers.get(TimeUnit.MINUTES).add(taskDefinitionKey, taskDefinition);
+                TaskHandler handler = this.taskHandlers.get(TimeUnit.MINUTES);
+                switch (taskDefinition.getAction()) {
+                    case INSERT:
+                        handler.add(taskDefinitionKey, taskDefinition);
+                        break;
+                    case UPDATE:
+                        handler.delete(taskDefinitionKey);
+                        handler.add(taskDefinitionKey, taskDefinition);
+                        break;
+                    case DELETE:
+                        handler.delete(taskDefinitionKey);
+                        break;
+                }
                 break;
         }
 

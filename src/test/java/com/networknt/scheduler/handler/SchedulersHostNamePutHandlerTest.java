@@ -30,11 +30,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 @Ignore
-public class SchedulersIdPutHandlerTest {
+public class SchedulersHostNamePutHandlerTest {
     @ClassRule
     public static TestServer server = TestServer.getInstance();
 
-    static final Logger logger = LoggerFactory.getLogger(SchedulersIdPutHandlerTest.class);
+    static final Logger logger = LoggerFactory.getLogger(SchedulersHostNamePutHandlerTest.class);
     static final boolean enableHttp2 = server.getServerConfig().isEnableHttp2();
     static final boolean enableHttps = server.getServerConfig().isEnableHttps();
     static final int httpPort = server.getServerConfig().getHttpPort();
@@ -43,7 +43,7 @@ public class SchedulersIdPutHandlerTest {
     static final String JSON_MEDIA_TYPE = "application/json";
 
     @Test
-    public void testSchedulersIdPutHandlerTest() throws ClientException {
+    public void testSchedulersHostNamePutHandlerTest() throws ClientException {
 
         final Http2Client client = Http2Client.getInstance();
         final CountDownLatch latch = new CountDownLatch(1);
@@ -58,7 +58,7 @@ public class SchedulersIdPutHandlerTest {
             throw new ClientException(e);
         }
         final AtomicReference<ClientResponse> reference = new AtomicReference<>();
-        String requestUri = "/schedulers/TgLyvBMEePHtXTZAgTUjMje";
+        String requestUri = "/schedulers/FUqOLdqD/FUqOLdqD";
         String httpMethod = "put";
         try {
             ClientRequest request = new ClientRequest().setPath(requestUri).setMethod(Methods.PUT);
