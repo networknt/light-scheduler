@@ -416,7 +416,10 @@
                             <imports>
                                 <import>${project.basedir}/src/main/resources/schemas/frequency-timeunit.avsc</import>
                                 <import>${project.basedir}/src/main/resources/schemas/task-frequency.avsc</import>
+                                <import>${project.basedir}/src/main/resources/schemas/task-definition-action.avsc</import>
+                                <import>${project.basedir}/src/main/resources/schemas/task-definition-key.avsc</import>
                                 <import>${project.basedir}/src/main/resources/schemas/task-definition.avsc</import>
+
                             </imports>
                         </configuration>
                     </execution>

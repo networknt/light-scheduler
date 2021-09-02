@@ -5,6 +5,7 @@
   "fields": [
     {"name": "host","type": "string"},
     {"name": "name","type": "string"},
+    {"name": "action","type": "DefinitionAction"},
     {"name": "frequency","type": ["null", "TaskFrequency"], "default": null},
     {"name": "topic", "type": "string"},
     {"name": "data","type": [ "null",

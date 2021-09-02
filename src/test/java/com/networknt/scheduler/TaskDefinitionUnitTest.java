@@ -26,6 +26,7 @@ public class TaskDefinitionUnitTest {
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName("petstore-health-check")
                 .setHost("networknt.com")
+                .setAction(DefinitionAction.INSERT)
                 .setTopic("health-check")
                 .setFrequency(taskFrequency)
                 .build();
@@ -48,6 +49,7 @@ public class TaskDefinitionUnitTest {
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName("petstore-health-check")
                 .setHost("networknt.com")
+                .setAction(DefinitionAction.INSERT)
                 .setTopic("health-check")
                 .setData(data)
                 .setFrequency(taskFrequency)
@@ -59,6 +61,7 @@ public class TaskDefinitionUnitTest {
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName("petstore-health-check")
                 .setHost("networknt.com")
+                .setAction(DefinitionAction.INSERT)
                 .setTopic("health-check")
                 .build();
     }
