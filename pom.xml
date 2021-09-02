@@ -74,6 +74,10 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
+        <repository>
+            <id>mulesoft</id>
+            <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
+        </repository>
     </repositories>
 
     <properties>
