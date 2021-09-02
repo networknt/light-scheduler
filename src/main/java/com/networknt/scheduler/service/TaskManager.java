@@ -1,13 +1,10 @@
 package com.networknt.scheduler.service;
 
-import com.networknt.scheduler.DefinitionAction;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import com.networknt.scheduler.TaskDefinition;
 import com.networknt.scheduler.TaskDefinitionKey;
 import com.networknt.scheduler.TimeUnit;
-
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TaskManager {
@@ -30,67 +27,41 @@ public class TaskManager {
     public KeyValue<TaskDefinitionKey, TaskDefinition> handle(final TaskDefinitionKey taskDefinitionKey,
                            final TaskDefinition taskDefinition) {
         final TimeUnit frequencyTimeUnit = taskDefinition.getFrequency().getTimeUnit();
-
-        /**
-         * Check all handler to see if the key is present.
-         * If its present compare the previous frequency with current one.
-         * if both are same, then update it.
-         *
-         * If the new and old frequency are not same, remove from the old store and add the same to
-         * new and correct store.
-         */
-//        for (TaskHandler taskHandler: taskHandlers.values()) {
-//            TaskDefinition prvTaskDefinition = taskHandler.get(taskDefinitionKey);
-//
-//            if (Objects.nonNull(prvTaskDefinition)) {
-//                if (taskDefinition.getFrequency().getTimeUnit() == prvTaskDefinition.getFrequency().getTimeUnit()) {
-                    /**
-                     * There is no change in the frequency but some other params might have been changed.
-                     * Hence we need to update the same in the same store
-                     */
-//                    taskHandler.add(taskDefinitionKey, taskDefinition);
-//                    return KeyValue.pair(taskDefinitionKey, taskDefinition);
-//                } else {
-                    /**
-                     * Looks like the frequency changed along with some data.
-                     * Need to remove the same from the current store and allow the same to be updated
-                     */
-//                    taskHandler.delete(taskDefinitionKey);
-//                    break;
-//                }
-//            }
-//        }
-
+        TaskHandler handler = null;
         switch (frequencyTimeUnit) {
             case DAYS:
-                this.taskHandlers.get(TimeUnit.DAYS).add(taskDefinitionKey, taskDefinition);
+                handler = this.taskHandlers.get(TimeUnit.DAYS);
                 break;
 
-            case MILLISECONDS:
-                this.taskHandlers.get(TimeUnit.MILLISECONDS).add(taskDefinitionKey, taskDefinition);
-                break;
-
-            case SECONDS:
-                this.taskHandlers.get(TimeUnit.SECONDS).add(taskDefinitionKey, taskDefinition);
+            case HOURS:
+                handler = this.taskHandlers.get(TimeUnit.HOURS);
                 break;
 
             case MINUTES:
-                TaskHandler handler = this.taskHandlers.get(TimeUnit.MINUTES);
-                switch (taskDefinition.getAction()) {
-                    case INSERT:
-                        handler.add(taskDefinitionKey, taskDefinition);
-                        break;
-                    case UPDATE:
-                        handler.delete(taskDefinitionKey);
-                        handler.add(taskDefinitionKey, taskDefinition);
-                        break;
-                    case DELETE:
-                        handler.delete(taskDefinitionKey);
-                        break;
-                }
+                handler = this.taskHandlers.get(TimeUnit.MINUTES);
+                break;
+
+            case SECONDS:
+                handler = this.taskHandlers.get(TimeUnit.SECONDS);
+                break;
+
+            case MILLISECONDS:
+                handler = this.taskHandlers.get(TimeUnit.MILLISECONDS);
                 break;
         }
 
+        switch (taskDefinition.getAction()) {
+            case INSERT:
+                handler.add(taskDefinitionKey, taskDefinition);
+                break;
+            case UPDATE:
+                handler.delete(taskDefinitionKey);
+                handler.add(taskDefinitionKey, taskDefinition);
+                break;
+            case DELETE:
+                handler.delete(taskDefinitionKey);
+                break;
+        }
         return KeyValue.pair(taskDefinitionKey, taskDefinition);
     }
 }

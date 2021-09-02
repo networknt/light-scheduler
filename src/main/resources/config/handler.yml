@@ -66,9 +66,6 @@ handlers:
   # Business Handlers
   - com.networknt.scheduler.handler.SchedulersPostHandler
   - com.networknt.scheduler.handler.SchedulersGetHandler
-  - com.networknt.scheduler.handler.SchedulersHostNameGetHandler
-  - com.networknt.scheduler.handler.SchedulersHostNamePutHandler
-  - com.networknt.scheduler.handler.SchedulersHostNameDeleteHandler
 
 
 chains:
@@ -96,21 +93,6 @@ paths:
     exec:
       - default
       - com.networknt.scheduler.handler.SchedulersGetHandler
-  - path: '/schedulers/{host}/{name}'
-    method: 'GET'
-    exec:
-      - default
-      - com.networknt.scheduler.handler.SchedulersHostNameGetHandler
-  - path: '/schedulers/{host}/{name}'
-    method: 'PUT'
-    exec:
-      - default
-      - com.networknt.scheduler.handler.SchedulersHostNamePutHandler
-  - path: '/schedulers/{host}/{name}'
-    method: 'DELETE'
-    exec:
-      - default
-      - com.networknt.scheduler.handler.SchedulersHostNameDeleteHandler
 
   - path: '/health/${server.serviceId:com.networknt.scheduler-1.0.0}'
     method: 'get'
