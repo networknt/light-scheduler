@@ -45,15 +45,21 @@ paths:
       security:
       - scheduler_auth:
         - "sched:r"
-  /schedulers/{id}:
+  /schedulers/{host}/{name}:
     get:
       operationId: "getTaskDefinitionById"
       summary: "Get a schedule task definition by Id"
       parameters:
-      - name: "id"
+      - name: "host"
         in: "path"
         required: true
-        description: "Task Definition Id with host and task name"
+        description: "Task definition host"
+        schema:
+          type: "string"
+      - name: "name"
+        in: "path"
+        required: true
+        description: "Task definition name"
         schema:
           type: "string"
       responses:
@@ -76,10 +82,16 @@ paths:
       operationId: "updateTaskDefinitionById"
       summary: "Update a task definition by Id"
       parameters:
-      - name: "id"
+      - name: "host"
         in: "path"
         required: true
-        description: "Task Definition Id with host and task name"
+        description: "Task definition host"
+        schema:
+          type: "string"
+      - name: "name"
+        in: "path"
+        required: true
+        description: "Task definition name"
         schema:
           type: "string"
       responses:
@@ -95,13 +107,19 @@ paths:
       - scheduler_auth:
         - "sched:w"
     delete:
-      operationId: "deleteTaskDefinitionById"
-      summary: "Delete a task definition by Id"
+      operationId: "deleteTaskDefinitionByHostName"
+      summary: "Delete a task definition by host and name"
       parameters:
-      - name: "id"
+      - name: "host"
         in: "path"
         required: true
-        description: "Task Definition Id with host and task name"
+        description: "Task definition host"
+        schema:
+          type: "string"
+      - name: "name"
+        in: "path"
+        required: true
+        description: "Task definition name"
         schema:
           type: "string"
       responses:
@@ -155,6 +173,8 @@ components:
         name:
           description: "unique task name within the host"
           type: "string"
+        action:
+          $ref: "#/components/schemas/DefinitionAction"
         frequency:
           $ref: "#/components/schemas/TaskFrequency"
         topic:
@@ -191,3 +211,9 @@ components:
       - "HOURS"
       - "DAYS"
       - "WEEKS"
+    DefinitionAction:
+      type: "string"
+      enum:
+      - "INSERT"
+      - "UPDATE"
+      - "DELETE"

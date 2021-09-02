@@ -44,6 +44,7 @@ public class SchedulersPostHandler implements LightHttpHandler {
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName((String)bodyMap.get("name"))
                 .setHost((String)bodyMap.get("host"))
+                .setAction(DefinitionAction.valueOf((String)bodyMap.get("action")))
                 .setTopic((String)bodyMap.get("topic"))
                 .setFrequency(taskFrequency)
                 .setData(dataMap)
@@ -51,7 +52,7 @@ public class SchedulersPostHandler implements LightHttpHandler {
         if(logger.isDebugEnabled()) logger.debug("Created task definition key {}", taskDefinition);
 
         ProducerRecord<TaskDefinitionKey, TaskDefinition> producerRecord = new ProducerRecord(config.getInputTopic(),
-                taskDefinitionKey ,taskDefinition);
+                taskDefinitionKey, taskDefinition);
 
         final CountDownLatch latch = new CountDownLatch(1);
         SchedulerStartupHook.producer.send(producerRecord, (recordMetadata, e) -> {

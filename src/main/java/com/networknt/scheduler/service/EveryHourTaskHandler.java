@@ -7,6 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 public class EveryHourTaskHandler extends AbstractTaskHandler {
     protected EveryHourTaskHandler(ProcessorContext processorContext, TimeUnit timeUnit) {
-        super(processorContext, SchedulerConstants.EVERY_1HR_TASK_STORE, timeUnit);
+        super(processorContext, SchedulerConstants.EVERY_HOUR_TASK_STORE, timeUnit);
     }
 }
