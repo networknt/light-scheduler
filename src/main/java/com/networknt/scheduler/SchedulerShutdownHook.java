@@ -12,7 +12,7 @@ public class SchedulerShutdownHook implements ShutdownHookProvider {
     @Override
     public void onShutdown() {
         logger.info("SchedulerShutdownHook onShutdown begins.");
-        // close the Kafka transactional producer before the server is shutdown
+        // close the Kafka Sidecar producer before the server is shutdown
         NativeLightProducer producer = SingletonServiceFactory.getBean(NativeLightProducer.class);
         try { if(producer != null) producer.close(); } catch(Exception e) {e.printStackTrace();}
         // close the streams
