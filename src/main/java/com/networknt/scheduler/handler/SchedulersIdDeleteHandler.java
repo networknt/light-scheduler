@@ -12,29 +12,15 @@ import java.util.Deque;
 import java.util.Map;
 
 /**
-For more information on how to write business handlers, please check the link below.
-https://doc.networknt.com/development/business-handler/rest/
+ * Delete a task definition by producing a new entry with the key but empty value.
+ *
+ * @author Steve Hu
 */
 public class SchedulersIdDeleteHandler implements LightHttpHandler {
-    SchedulersIdDeleteService service;
 
-    public SchedulersIdDeleteHandler () {
-        this.service = new SchedulersIdDeleteService ();
-    }
-
-    
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        HeaderMap requestHeaders = exchange.getRequestHeaders();
-        Map<String, Deque<String>> queryParameters = exchange.getQueryParameters();
-        Map<String, Deque<String>> pathParameters = exchange.getPathParameters();
-        HttpMethod httpMethod = HttpMethod.resolve(exchange.getRequestMethod().toString());
-        RequestEntity requestEntity = new RequestEntity<>(null, requestHeaders, httpMethod, null, null, queryParameters, pathParameters);
-        ResponseEntity<String> responseEntity = service.invoke(requestEntity);
-        responseEntity.getHeaders().forEach(values -> {
-            exchange.getResponseHeaders().add(values.getHeaderName(), values.getFirst());
-        });
-        exchange.setStatusCode(responseEntity.getStatusCodeValue());
-        exchange.getResponseSender().send(responseEntity.getBody());
+        exchange.setStatusCode(201);
+        exchange.getResponseSender().send("OK");
     }
 }
