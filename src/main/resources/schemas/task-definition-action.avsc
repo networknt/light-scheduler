@@ -1,6 +1,0 @@
-{
-  "namespace": "com.networknt.scheduler",
-  "type": "enum",
-  "name": "DefinitionAction",
-  "symbols": ["INSERT", "UPDATE", "DELETE"]
-}
