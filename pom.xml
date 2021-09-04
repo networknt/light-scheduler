@@ -284,8 +284,12 @@
             <artifactId>kafka-streams</artifactId>
             <version>${version.light-4j}</version>
         </dependency>
+        <dependency>
+            <groupId>net.lightapi</groupId>
+            <artifactId>portal-event</artifactId>
+            <version>${version.light-4j}</version>
+        </dependency>
 
-        
         
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -403,33 +407,6 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!-- Maven Avro plugin for generating pojo-->
-            <plugin>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro-maven-plugin</artifactId>
-                <version>${version.avro}</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>schema</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>${project.basedir}/src/main/resources/schemas/</sourceDirectory>
-                            <outputDirectory>${project.basedir}/src/main/generated/</outputDirectory>
-                            <imports>
-                                <import>${project.basedir}/src/main/resources/schemas/frequency-timeunit.avsc</import>
-                                <import>${project.basedir}/src/main/resources/schemas/task-frequency.avsc</import>
-                                <import>${project.basedir}/src/main/resources/schemas/task-definition-action.avsc</import>
-                                <import>${project.basedir}/src/main/resources/schemas/task-definition-key.avsc</import>
-                                <import>${project.basedir}/src/main/resources/schemas/task-definition.avsc</import>
-
-                            </imports>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
 
         <pluginManagement>
