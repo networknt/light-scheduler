@@ -75,6 +75,20 @@
             </releases>
         </repository>
         <repository>
+            <id>snapshots-s01</id>
+            <url>
+                https://s01.oss.sonatype.org/content/repositories/snapshots
+            </url>
+            <snapshots>
+                <enabled>true</enabled>
+                <!-- never, daily, interval:X (where X is in minutes) or always -->
+                <!--<updatePolicy>daily</updatePolicy> -->
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
             <id>mulesoft</id>
             <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
         </repository>
