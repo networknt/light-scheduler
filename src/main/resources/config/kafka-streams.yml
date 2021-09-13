@@ -10,19 +10,19 @@ properties:
   # Schema registry url
   schema.registry.url: ${kafka-streams.schema.registry.url:http://localhost:8081}
   # Schema registry client truststore location, use the following two properties only if schema registry url is https.
-  # schema.registry.ssl.truststore.location: ${kafka-streams.schema.registry.ssl.truststore.location:/config/client.truststore}
+  schema.registry.ssl.truststore.location: ${kafka-streams.schema.registry.ssl.truststore.location:/config/client.truststore}
   # Schema registry client truststore password
-  # schema.registry.ssl.truststore.password: ${kafka-streams.schema.registry.ssl.truststore.password:password}
+  schema.registry.ssl.truststore.password: ${kafka-streams.schema.registry.ssl.truststore.password:password}
   # security configuration for enterprise deployment
-  # security.protocol: ${kafka-streams.security.protocol:SASL_SSL}
-  # sasl.mechanism: ${kafka-streams.sasl.mechanism:PLAIN}
-  # sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${kafka-streams.username:username}\" password=\"${kafka-streams.password:password}\";"
-  # ssl.endpoint.identification.algorithm: ${kafka-streams.ssl.endpoint.identification.algorithm:algo-name}
+  security.protocol: ${kafka-streams.security.protocol:SASL_SSL}
+  sasl.mechanism: ${kafka-streams.sasl.mechanism:PLAIN}
+  sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${kafka-streams.username:username}\" password=\"${KAFKA_STREAMS_PASSWORD:password}\";"
+  ssl.endpoint.identification.algorithm: ${kafka-streams.ssl.endpoint.identification.algorithm:algo-name}
   # Apache Kafka 2.3 clients or later will then read from followers that have matching broker.rack as the specified client.rack ID.
-  # client.rack: ${kafka-streams.client.rack:rack-name}
+  client.rack: ${kafka-streams.client.rack:rack-name}
   # basic authentication user:pass for the schema registry
-  # basic.auth.user.info: ${kafka-streams.username:username}:${kafka-streams.password:password}
-  # basic.auth.credentials.source: ${kafka-streams.basic.auth.credentials.source:USER_INFO}
+  basic.auth.user.info: ${kafka-streams.username:username}:${KAFKA_STREAMS_PASSWORD:password}
+  basic.auth.credentials.source: ${kafka-streams.basic.auth.credentials.source:USER_INFO}
 
 # Only set to true right after the streams reset and start the server. Once the server is up, shutdown and change this to false and restart.
 cleanUp: ${kafka-streams.cleanUp:false}
