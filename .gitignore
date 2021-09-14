@@ -11,6 +11,9 @@ out/
 .settings
 .gradle
 .metadata/
+.vscode/
+bin/
+log/
 *.iml
 *.log
 *.tmp
