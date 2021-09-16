@@ -28,6 +28,7 @@ public class TaskDefinitionUnitTest {
                 .setHost("networknt.com")
                 .setAction(DefinitionAction.INSERT)
                 .setTopic("health-check")
+                .setStart(System.currentTimeMillis())
                 .setFrequency(taskFrequency)
                 .build();
     }
@@ -51,6 +52,7 @@ public class TaskDefinitionUnitTest {
                 .setHost("networknt.com")
                 .setAction(DefinitionAction.INSERT)
                 .setTopic("health-check")
+                .setStart(System.currentTimeMillis())
                 .setData(data)
                 .setFrequency(taskFrequency)
                 .build();
@@ -63,6 +65,7 @@ public class TaskDefinitionUnitTest {
                 .setHost("networknt.com")
                 .setAction(DefinitionAction.INSERT)
                 .setTopic("health-check")
+                .setStart(System.currentTimeMillis())
                 .build();
     }
 }

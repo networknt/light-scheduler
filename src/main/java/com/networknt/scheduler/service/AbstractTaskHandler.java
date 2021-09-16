@@ -1,5 +1,6 @@
 package com.networknt.scheduler.service;
 
+import com.networknt.scheduler.TimeUnitUtil;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -86,8 +87,16 @@ public abstract class AbstractTaskHandler implements TaskHandler, Punctuator {
         final KeyValueIterator<TaskDefinitionKey, TaskDefinition> all = taskDefinitionStore.all();
         while (all.hasNext()) {
             final KeyValue<TaskDefinitionKey, TaskDefinition> next = all.next();
-            if(logger.isInfoEnabled()) logger.debug("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
-            this.processorContext.forward(next.key, next.value);
+            long start = next.value.getStart();
+            long current = TimeUnitUtil.nextStartTimestamp(next.value.getFrequency().getTimeUnit(), l);
+            if(current - start > 0L) {
+                long period = TimeUnitUtil.oneTimeUnitMillisecond(timeUnit) * next.value.getFrequency().getTime();
+                if(logger.isDebugEnabled()) logger.debug("start timestamp = " + start + " current timestamp = " + current + " period millisecond = " + period);
+                if((current-start) % period == 0) {
+                    if(logger.isInfoEnabled()) logger.info("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
+                    this.processorContext.forward(next.key, next.value);
+                }
+            }
         }
         all.close();
     }
