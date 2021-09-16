@@ -1,0 +1,6 @@
+# producer format configuration
+kafka-producer.keyFormat: avro
+kafka-producer.valueFormat: avro
+
+# streams configuration
+kafka-streams.cleanUp: false

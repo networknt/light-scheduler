@@ -39,13 +39,20 @@ public class SchedulersPostHandler implements LightHttpHandler {
                 .setTime((Integer)frequencyMap.get("time"))
                 .build();
         if(logger.isDebugEnabled()) logger.debug("Created task frequency key {}", taskFrequency);
-
+        // start is in the body, then use it for future task schedule. Otherwise, use the current time.
+        long start = System.currentTimeMillis();
+        Long longStart = (Long)bodyMap.get("start");
+        if(longStart != null) {
+            start = longStart;
+        }
+        start = TimeUnitUtil.nextStartTimestamp(taskFrequency.getTimeUnit(), start);
         Map<CharSequence, CharSequence> dataMap = (Map<CharSequence, CharSequence>) bodyMap.get("data");
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName((String)bodyMap.get("name"))
                 .setHost((String)bodyMap.get("host"))
                 .setAction(DefinitionAction.valueOf((String)bodyMap.get("action")))
                 .setTopic((String)bodyMap.get("topic"))
+                .setStart(start)
                 .setFrequency(taskFrequency)
                 .setData(dataMap)
                 .build();

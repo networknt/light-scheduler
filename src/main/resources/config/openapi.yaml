@@ -116,6 +116,10 @@ components:
         topic:
           description: "output topic the task needs to be sent out"
           type: "string"
+        start:
+          description: "start timestamp in milliseconds round by the timeunit"
+          type: "integer"
+          format: "int64"
         data:
           $ref: "#/components/schemas/TaskExecution"
       required:
