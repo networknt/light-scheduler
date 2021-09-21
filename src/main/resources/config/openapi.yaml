@@ -33,26 +33,26 @@ paths:
         - "A8E73740C0041C03D67C3A951AA1D7533C8F9F2FB57D7BA107210B9BC9E06DA2"
     get:
       operationId: "getScheduleTaskDefinitions"
-      summary: "Get a list of schedule task definitions."
+      summary: "Get a list of schedule task definitions with the following filters"
       parameters:
       - name: "host"
         in: "query"
-        required: true
+        required: false
         description: "Task definition host"
         schema:
           type: "string"
       - name: "name"
         in: "query"
-        required: true
+        required: false
         description: "Task definition name"
         schema:
           type: "string"
       - name: "unit"
         in: "query"
-        required: true
+        required: false
         description: "Task definition time unit"
         schema:
-          type: "string"
+          $ref: "#/components/schemas/TimeUnit"
       responses:
         "200":
           description: "Successful response"
