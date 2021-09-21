@@ -30,6 +30,7 @@ paths:
       security:
       - scheduler_auth:
         - "sched:w"
+        - "A8E73740C0041C03D67C3A951AA1D7533C8F9F2FB57D7BA107210B9BC9E06DA2"
     get:
       operationId: "getScheduleTaskDefinitions"
       summary: "Get a list of schedule task definitions."
@@ -70,6 +71,7 @@ paths:
       security:
       - scheduler_auth:
         - "sched:r"
+        - "A8E73740C0041C03D67C3A951AA1D7533C8F9F2FB57D7BA107210B9BC9E06DA2"
 components:
   securitySchemes:
     scheduler_auth:
@@ -81,6 +83,8 @@ components:
           scopes:
             sched:w: "Scheduler Write"
             sched:r: "Scheduler Read"
+            A8E73740C0041C03D67C3A951AA1D7533C8F9F2FB57D7BA107210B9BC9E06DA2: "API Bootstrap token scope"
+
   schemas:
     Status:
       type: "object"
