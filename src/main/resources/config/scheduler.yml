@@ -1,2 +1,5 @@
 # Configuration for the light-scheduler
 inputTopic: ${scheduler.inputTopic:light-scheduler}
+# Indicate if it runs in multi-tenancy mode
+multiTenancy: ${scheduler.multiTenancy:false}
+

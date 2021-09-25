@@ -5,6 +5,8 @@ import org.apache.kafka.streams.processor.ProcessorContext;
 import com.networknt.scheduler.TaskDefinition;
 import com.networknt.scheduler.TaskDefinitionKey;
 import com.networknt.scheduler.TimeUnit;
+
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TaskManager {
@@ -63,5 +65,9 @@ public class TaskManager {
                 break;
         }
         return KeyValue.pair(taskDefinitionKey, taskDefinition);
+    }
+
+    public Map<TimeUnit, TaskHandler> getTaskHandlers() {
+        return taskHandlers;
     }
 }

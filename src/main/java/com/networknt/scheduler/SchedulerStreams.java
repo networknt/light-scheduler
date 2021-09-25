@@ -40,4 +40,7 @@ public class SchedulerStreams implements LightStreams {
         schedulerStreams.close();
     }
 
+    public KafkaStreams getKafkaStreams() {
+        return schedulerStreams;
+    }
 }
