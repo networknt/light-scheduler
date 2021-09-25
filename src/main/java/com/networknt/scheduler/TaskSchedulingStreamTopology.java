@@ -5,7 +5,6 @@ import com.networknt.kafka.common.KafkaStreamsConfig;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
@@ -30,7 +29,7 @@ public class TaskSchedulingStreamTopology {
         // add necessary stores to the stream builder
         createVariousTaskDefinitionStateStore(streamsBuilder);
 
-        // Created Serde to consume the from topics
+        // Created Serde to consume the tasks from topics
         final Consumed<TaskDefinitionKey, TaskDefinition> consumed = Consumed.with(getTaskDefinitionKeySpecificAvroSerde(),
                 getTaskDefinitionSpecificAvroSerde());
 
