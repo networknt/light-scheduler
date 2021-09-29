@@ -35,6 +35,10 @@ properties:
   sasl.mechanism: ${kafka-producer.sasl.mechanism:PLAIN}
   sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${kafka-producer.username:username}\" password=\"${KAFKA_PRODUCER_PASSWORD:password}\";"
   ssl.endpoint.identification.algorithm: ${kafka-producer.ssl.endpoint.identification.algorithm:algo-name}
+
+  ssl.truststore.location: ${kafka-producer.ssl.truststore.location:/config/kafka.server.truststore.jks}
+  ssl.truststore.password: ${kafka-producer.ssl.truststore.password:changeme}
+
   # Apache Kafka 2.3 clients or later will then read from followers that have matching broker.rack as the specified client.rack ID.
   client.rack: ${kafka-producer.client.rack:rack-name}
   # basic authentication user:pass for the schema registry
