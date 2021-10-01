@@ -18,7 +18,7 @@
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/networknt/light-router/issues</url>
+        <url>https://github.com/networknt/light-scheduler/issues</url>
     </issueManagement>
 
     <licenses>
@@ -30,9 +30,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git://github.com:networknt/light-router.git</connection>
-        <developerConnection>scm:git://github.com:networknt/light-router.git</developerConnection>
-        <url>https://github.com:networknt/light-router.git</url>
+        <connection>scm:git://github.com:networknt/light-scheduler.git</connection>
+        <developerConnection>scm:git://github.com:networknt/light-scheduler.git</developerConnection>
+        <url>https://github.com:networknt/light-scheduler.git</url>
     </scm>
 
     <distributionManagement>
