@@ -32,6 +32,7 @@ public class SchedulerStreams implements LightStreams {
     public void start(String ip, int port) {
         if(logger.isDebugEnabled()) logger.info("ServiceStreams is starting...");
         startSchedulerStreams(ip, port);
+        registerModule();
     }
 
     @Override
