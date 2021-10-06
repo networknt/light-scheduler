@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class TaskSchedulingStreamTopology {
@@ -50,18 +51,20 @@ public class TaskSchedulingStreamTopology {
 
     private static SpecificAvroSerde<TaskDefinitionKey> getTaskDefinitionKeySpecificAvroSerde() {
         final SpecificAvroSerde<TaskDefinitionKey> changeEventSpecificAvroSerde = new SpecificAvroSerde<>();
-        final Map<String, String> serdeConfig =
-                Collections.singletonMap(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                        (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
+        final Map<String, String> serdeConfig = new HashMap<>();
+        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
+        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG));
+        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE));
         changeEventSpecificAvroSerde.configure(serdeConfig, true);
         return changeEventSpecificAvroSerde;
     }
 
     private static SpecificAvroSerde<TaskDefinition> getTaskDefinitionSpecificAvroSerde() {
         final SpecificAvroSerde<TaskDefinition> changeEventSpecificAvroSerde = new SpecificAvroSerde<>();
-        final Map<String, String> serdeConfig =
-                Collections.singletonMap(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                        (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
+        Map<String, String> serdeConfig = new HashMap<>();
+        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
+        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG));
+        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE));
         changeEventSpecificAvroSerde.configure(serdeConfig, false);
         return changeEventSpecificAvroSerde;
     }
