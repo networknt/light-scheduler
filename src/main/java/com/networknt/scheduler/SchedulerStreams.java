@@ -5,6 +5,9 @@ import com.networknt.kafka.common.KafkaStreamsConfig;
 import com.networknt.kafka.streams.LightStreams;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.errors.DeserializationExceptionHandler;
+import org.apache.kafka.streams.errors.ProductionExceptionHandler;
+import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,11 @@ public class SchedulerStreams implements LightStreams {
         streamsProps.putAll(config.getProperties());
         streamsProps.put(StreamsConfig.APPLICATION_SERVER_CONFIG, ip + ":" + port);
         schedulerStreams = new KafkaStreams(topology.buildTaskStreamingTopology(), streamsProps);
+        schedulerStreams.setUncaughtExceptionHandler(ex -> {
+            logger.error("Kafka-Streams uncaught exception occurred. Stream will be replaced with new thread", ex);
+            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.REPLACE_THREAD;
+        });
+
         if(config.isCleanUp()) {
             schedulerStreams.cleanUp();
         }
