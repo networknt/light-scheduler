@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class TaskSchedulingStreamTopology {
     private final static Logger logger = LoggerFactory.getLogger(TaskSchedulingStreamTopology.class);
@@ -50,21 +52,13 @@ public class TaskSchedulingStreamTopology {
 
     private static SpecificAvroSerde<TaskDefinitionKey> getTaskDefinitionKeySpecificAvroSerde() {
         final SpecificAvroSerde<TaskDefinitionKey> changeEventSpecificAvroSerde = new SpecificAvroSerde<>();
-        final Map<String, String> serdeConfig = new HashMap<>();
-        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
-        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG));
-        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE));
-        changeEventSpecificAvroSerde.configure(serdeConfig, true);
+        changeEventSpecificAvroSerde.configure(streamsConfig.getProperties(), true);
         return changeEventSpecificAvroSerde;
     }
 
     private static SpecificAvroSerde<TaskDefinition> getTaskDefinitionSpecificAvroSerde() {
         final SpecificAvroSerde<TaskDefinition> changeEventSpecificAvroSerde = new SpecificAvroSerde<>();
-        Map<String, String> serdeConfig = new HashMap<>();
-        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG));
-        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG));
-        serdeConfig.put(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE, (String)streamsConfig.getProperties().get(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE));
-        changeEventSpecificAvroSerde.configure(serdeConfig, false);
+        changeEventSpecificAvroSerde.configure(streamsConfig.getProperties(), false);
         return changeEventSpecificAvroSerde;
     }
 
