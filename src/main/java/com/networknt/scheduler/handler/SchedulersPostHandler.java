@@ -5,6 +5,7 @@ import com.networknt.config.Config;
 import com.networknt.config.JsonMapper;
 import com.networknt.handler.LightHttpHandler;
 import com.networknt.scheduler.*;
+import com.networknt.utility.TimeUtil;
 import io.undertow.server.HttpServerExchange;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class SchedulersPostHandler implements LightHttpHandler {
         if(longStart != null) {
             start = longStart;
         }
-        start = TimeUnitUtil.nextStartTimestamp(taskFrequency.getTimeUnit(), start);
+        start = TimeUtil.nextStartTimestamp(java.util.concurrent.TimeUnit.valueOf(taskFrequency.getTimeUnit().name()), start);
         Map<CharSequence, CharSequence> dataMap = (Map<CharSequence, CharSequence>) bodyMap.get("data");
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName((String)bodyMap.get("name"))
