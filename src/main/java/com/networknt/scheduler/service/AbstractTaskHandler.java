@@ -87,7 +87,8 @@ public abstract class AbstractTaskHandler implements TaskHandler, Punctuator {
         final KeyValueIterator<TaskDefinitionKey, TaskDefinition> all = taskDefinitionStore.all();
         while (all.hasNext()) {
             final KeyValue<TaskDefinitionKey, TaskDefinition> next = all.next();
-            long start = next.value.getStart();
+            // round both start and current to the next TimeUnit.
+            long start = TimeUnitUtil.nextStartTimestamp(next.value.getFrequency().getTimeUnit(), next.value.getStart());
             long current = TimeUnitUtil.nextStartTimestamp(next.value.getFrequency().getTimeUnit(), l);
             if(current - start > 0L) {
                 long period = TimeUnitUtil.oneTimeUnitMillisecond(timeUnit) * next.value.getFrequency().getTime();
