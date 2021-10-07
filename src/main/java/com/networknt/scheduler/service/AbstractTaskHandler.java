@@ -1,6 +1,6 @@
 package com.networknt.scheduler.service;
 
-import com.networknt.scheduler.TimeUnitUtil;
+import com.networknt.utility.TimeUtil;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -88,13 +88,15 @@ public abstract class AbstractTaskHandler implements TaskHandler, Punctuator {
         while (all.hasNext()) {
             final KeyValue<TaskDefinitionKey, TaskDefinition> next = all.next();
             // round both start and current to the next TimeUnit.
-            long start = TimeUnitUtil.nextStartTimestamp(next.value.getFrequency().getTimeUnit(), next.value.getStart());
-            long current = TimeUnitUtil.nextStartTimestamp(next.value.getFrequency().getTimeUnit(), l);
+            long start = TimeUtil.nextStartTimestamp(TimeUnit.valueOf(next.value.getFrequency().getTimeUnit().name()), next.value.getStart());
+            long current = TimeUtil.nextStartTimestamp(TimeUnit.valueOf(next.value.getFrequency().getTimeUnit().name()), l);
             if(current - start > 0L) {
-                long period = TimeUnitUtil.oneTimeUnitMillisecond(timeUnit) * next.value.getFrequency().getTime();
-                if(logger.isTraceEnabled()) logger.trace("start timestamp = " + start + " current timestamp = " + current + " period millisecond = " + period);
-                if((current-start) % period == 0) {
+                long freq = TimeUtil.oneTimeUnitMillisecond(timeUnit) * next.value.getFrequency().getTime();
+                if(logger.isTraceEnabled()) logger.trace("start timestamp = " + start + " current timestamp = " + current + " period millisecond = " + freq);
+                if((current-start) % freq == 0) {
                     if(logger.isInfoEnabled()) logger.info("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
+                    // set the start timestamp to give executor detect the task age for skipping.
+                    next.value.setStart(current);
                     this.processorContext.forward(next.key, next.value);
                 }
             }
