@@ -92,7 +92,7 @@ public abstract class AbstractTaskHandler implements TaskHandler, Punctuator {
             long current = TimeUnitUtil.nextStartTimestamp(next.value.getFrequency().getTimeUnit(), l);
             if(current - start > 0L) {
                 long period = TimeUnitUtil.oneTimeUnitMillisecond(timeUnit) * next.value.getFrequency().getTime();
-                if(logger.isDebugEnabled()) logger.debug("start timestamp = " + start + " current timestamp = " + current + " period millisecond = " + period);
+                if(logger.isTraceEnabled()) logger.trace("start timestamp = " + start + " current timestamp = " + current + " period millisecond = " + period);
                 if((current-start) % period == 0) {
                     if(logger.isInfoEnabled()) logger.info("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
                     this.processorContext.forward(next.key, next.value);
