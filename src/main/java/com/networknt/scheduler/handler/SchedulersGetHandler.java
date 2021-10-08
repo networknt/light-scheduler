@@ -109,10 +109,10 @@ public class SchedulersGetHandler implements LightHttpHandler {
                 KeyValue<TaskDefinitionKey, TaskDefinition> keyValue = iterator.next();
                 TaskDefinitionKey key = keyValue.key;
                 TaskDefinition value = keyValue.value;
-                if(host != null && !host.contentEquals(key.getHost())) {
+                if(host != null && !host.equals(key.getHost())) {
                     continue;
                 }
-                if(name != null && !name.contentEquals(key.getName())) {
+                if(name != null && !name.equals(key.getName())) {
                     continue;
                 }
                 if(unit != null && !value.getFrequency().getTimeUnit().equals(TimeUnit.valueOf(unit))) {
