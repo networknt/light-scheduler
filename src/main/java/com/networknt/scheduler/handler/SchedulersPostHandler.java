@@ -47,7 +47,7 @@ public class SchedulersPostHandler implements LightHttpHandler {
             start = longStart;
         }
         start = TimeUtil.nextStartTimestamp(java.util.concurrent.TimeUnit.valueOf(taskFrequency.getTimeUnit().name()), start);
-        Map<CharSequence, CharSequence> dataMap = (Map<CharSequence, CharSequence>) bodyMap.get("data");
+        Map<String, String> dataMap = (Map<String, String>) bodyMap.get("data");
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName((String)bodyMap.get("name"))
                 .setHost((String)bodyMap.get("host"))

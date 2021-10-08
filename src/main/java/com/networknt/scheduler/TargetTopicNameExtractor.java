@@ -8,6 +8,6 @@ public class TargetTopicNameExtractor implements TopicNameExtractor<TaskDefiniti
     public String extract(final TaskDefinitionKey taskDefinitionKey,
                           final TaskDefinition taskDefinition,
                           final RecordContext recordContext) {
-        return taskDefinition.getTopic().toString();
+        return taskDefinition.getTopic();
     }
 }

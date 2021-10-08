@@ -41,11 +41,8 @@ public class TaskDefinitionUnitTest {
                 .setTime(3)
                 .build();
 
-        Map<CharSequence, CharSequence> configData = new HashMap();
-        configData.put("customerId", "10000");
-
-        Map<CharSequence, CharSequence> data = new HashMap();
-        configData.put("customerId", "10000");
+        Map<String, String> data = new HashMap();
+        data.put("customerId", "10000");
 
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName("petstore-health-check")
@@ -77,11 +74,8 @@ public class TaskDefinitionUnitTest {
                 .setTime(3)
                 .build();
 
-        Map<CharSequence, CharSequence> configData = new HashMap();
-        configData.put("customerId", "10000");
-
-        Map<CharSequence, CharSequence> data = new HashMap();
-        configData.put("customerId", "10000");
+        Map<String, String> data = new HashMap();
+        data.put("customerId", "10000");
 
         TaskDefinition taskDefinition = TaskDefinition.newBuilder()
                 .setName("petstore-health-check")
