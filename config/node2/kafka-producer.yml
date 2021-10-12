@@ -35,13 +35,17 @@ properties:
   # sasl.mechanism: ${kafka-producer.sasl.mechanism:PLAIN}
   # sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${kafka-producer.username:username}\" password=\"${KAFKA_PRODUCER_PASSWORD:password}\";"
   # ssl.endpoint.identification.algorithm: ${kafka-producer.ssl.endpoint.identification.algorithm:algo-name}
+
+  # ssl.truststore.location: ${kafka-producer.ssl.truststore.location:/config/kafka.server.truststore.jks}
+  # ssl.truststore.password: ${kafka-producer.ssl.truststore.password:changeme}
+
   # Apache Kafka 2.3 clients or later will then read from followers that have matching broker.rack as the specified client.rack ID.
   # client.rack: ${kafka-producer.client.rack:rack-name}
   # basic authentication user:pass for the schema registry
   # basic.auth.user.info: ${kafka-producer.username:username}:${KAFKA_PRODUCER_PASSWORD:password}
   # basic.auth.credentials.source: ${kafka-producer.basic.auth.credentials.source:USER_INFO}
   # If you have message that is bigger than 1 MB to produce, increase this value.
-  max.message.size: ${kafka-producer.max.message.size:1048576}
+  max.request.size: ${kafka-producer.max.request.size:1048576}
 
 # The default topic for the producer. Only certain producer implementation will use it.
 topic: ${kafka-producer.topic:portal-event}
@@ -49,7 +53,7 @@ topic: ${kafka-producer.topic:portal-event}
 keyFormat: ${kafka-producer.keyFormat:jsonschema}
 # Default value format if no schema for the topic value
 valueFormat: ${kafka-producer.valueFormat:jsonschema}
-# If open tracing is enable. traceability, correlation and metrics should not be in the chain if opentracing is used.
+# If open tracing is enabled. traceability, correlation and metrics should not be in the chain if opentracing is used.
 injectOpenTracing: ${kafka-producer.injectOpenTracing:false}
 # Inject serviceId as callerId into the http header for metrics to collect the caller. The serviceId is from server.yml
 injectCallerId: ${kafka-producer.injectCallerId:false}
