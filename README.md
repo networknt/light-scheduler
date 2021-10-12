@@ -1,89 +1,86 @@
 # light-scheduler
-A scalable event scheduler based on transactional Kafka streams and interactive queries
+A scalable event scheduler based on Kafka Streams and Interactive Queries
 
-There are so many schedulers implemented in Java as open source projects, and most of them are Java EE based and cannot scale. Also, most of them contain a task executor to execute services in the same thread synchronously. It further reduces the throughput as a single node can only handle a limited workload. 
+There are so many schedulers implemented in Java as open-source projects, and most of them are Java EE-based and cannot scale. Also, most of them contain a task executor to execute services in the same thread synchronously. It further reduces the throughput as a single node can only handle a limited workload. To archive high availability and fault tolerance, a centralized database will be used to persist the scheduled tasks, and the database will be s single point failure and bottleneck.
+ 
 
-The light-scheduler is not a task schedule but an event scheduler. The scheduler cluster is not responsible for executing the tasks but just send events to an output Kafka topic which can be partitioned with up to thousands. Each partition can be handled by a task executor that can handle thousands of tasks per second. The limitation is the network card throughput 10GB (over 1 million events assuming 1kb per event) most of the cases per node. 
-
+The light-scheduler is not a task schedule but an event scheduler. The scheduler cluster is not responsible for executing the tasks but just send events to an output Kafka topic which can be partitioned with up to thousands. Each partition can be handled by a task executor that can handle thousands of tasks per second. The limitation is the network card throughput of 10GB (over 1 million events assuming 1kb per event) in most cases per node. 
 
 ### Use cases
 
-Light-scheduler is time-based with both single trigger and repeating Cron like config. It can be used by a service to schedule a request that needs to be processed in the future. The service registers an event in the scheduler and suspends the processing of the current request. 
+Light-scheduler is time-based with repeating Cron-like config. It can be used by a service to schedule an event that needs to be processed in the future. The service registers a TaskDefinition event in the scheduler, and the scheduler will periodically push a task execution event to a target topic based on the frequency. 
 
-When the time arrives the requesting service is notified by the scheduler and former can resume processing of the suspended request.
+A task executor service will process the target topic with Kafka streams and execute the task in the streams processing. 
 
 Here are some of the use cases: 
 
 * Delayed - A job to be executed 30 minutes from now
-* Retry - Schedule an exponential backoff retry intervals of 1, 2, 4, 16, 256 and so on.
+* Retry - Schedule exponential backoff retry intervals of 1, 2, 4, 16, 256 and so on.
 * Timeout - Schedule a timeout check event to be executed after 1 min
 * Polling - Schedule a Cron job to be executed at some specified frequency
 * Workflow - Distributed workflow with state suspensions and resumptions
-* Batch jobs - This is the basic functionality of enterprise scheduler
-* Execution Window - Event must be scheduled in the next valid window. For example, from 9 to 5. If retry falls out of execution window, it must be executed in the next execution window. 
+* Batch jobs - This is the basic functionality of the enterprise scheduler
+* Execution Window - Event must be scheduled in the next valid window. For example, from 9 to 5. If retry falls out of the execution window, it must be executed in the next execution window. 
 
 ### Requirement
 
-* Master/Master cluster. Each node works independently on its own partition. This gives us the capability to scale linearly limited only by Kafka partitions. 
-* Extremely fault tolerant. If a node is down, the partition will be picked up by another node in the same consumer group automatically.
+* Master/Master cluster. Each node works independently on its partition, and this gives us the capability to scale linearly limited only by Kafka partitions. 
+* Extremely fault-tolerant. If a node is down, another node will automatically pick up the partition in the same consumer group.
 * Uniform Partitioning. Round-robin distribution of events to all partitions. 
 * Uniform Execution. All nodes share a similar load in quantity.
 * Multi-tenancy. Each event belongs to one tenant, and each tenant can define the rule for event distribution. 
-* Exact once delivery. All events are processed in a transactional context and guarantee to delivery exactly one. 
-
 
 
 ### Design
 
-The events will be injected to a Kafka topic which is partitioned. Each event has a key to decide which partition to injected to. You need to pick the key from entity id or so that all event-related for one entity can be pushed to the same partition and handled in order if necessary. 
+The task definition events will be injected into a Kafka topic light-scheduler which is partitioned. Each event has a key (host and name combination) to decide which partition to injected to. You need to pick the key name from the entity id so that all event-related for one entity can be pushed to the same partition and handled in order if necessary. 
 
-You can have many injection nodes as event producers, and usually, these are microservices instances. 
+You can have many injection nodes as event producers, and usually, these are light-scheduler microservices instances. If you have applications that can access the Kafka cluster directly, you can directly produce the task definition events to the light-scheduler topic. 
 
-For every partition, we start a microservice instance to process the streams of the event and put these events into a 1-minute bucket based on the scheduled time. The events will be saved in a key/value store on each node with the time is the key and a list of the events as value. 
+For every partition, we can start a microservice instance to process the streams of the task definition events and put the task execution events into 1 millisecond, 1 second, 1 minute, 1 hour or 1 day bucket based on the scheduled time. The events will be pushed to a Kafka task execution topic.
 
-For the consumer node, it also constantly scan the key/value store per minute to check if there is any event that needs to be delivered. If there are send all the event schedule at that minute to the delivery topic. 
-
-If delivery fails, the scanner will reschedule the delivery again in the next minute. It is configurable on how many minutes to scan in the past. 
+The consumer node also constantly processes the task execution topic to check if any event needs to be executed. If there are, process the task execution event. 
 
 
-##### Event  Injection and Event Execution
+##### Event Injection and Event Execution
 
 By using Kafka, we have a distinct separation of event injection and execution so that each side can be scaled independently given the use cases and workload. 
 
-There are two interfaces for the event injection: Kafka producer and REST API and both of them must support transactions to ensure that no event is lost. 
+There are two interfaces for the event injection: Kafka producer and REST API of light-scheduler.
 
-For the event injection, the limitation is the throughput of Kafka producer and it is linearly scalable. Of cause, the limitation is the network throughput in the end. 
+For the event injection, the limitation is the throughput of Kafka producer, and it is linearly scalable. Of course, the limitation is the network throughput in the end. 
 
-For the event execution, we are going to provide Kotlin based executors for most of the use cases with coroutine built-in. This is much more efficient than Java thread as it is lightweight and non-blocking. It would be very easy to support up to a million task executions in commodity hardware. 
+For the event execution, we have a light controller to execute the health check for registered services, as an example. We will provide a standalone service in the future as another example. 
 
-Along with standard task executors, we can push the execution event to one or more topics that some microservices subscribed. In this case, the task is executed , but we need a way to track the status. We can also invoke an API to execute task synchronously from REST executor. 
+We can push the execution event to one or more topics that some microservices subscribed with standard task executors. 
 
 ##### Chaining of Event
 
-In some of the use cases, several related jobs must be executed in sequence or a pre-defined order. It might be too much for the scheduler to handle this at the injection phase; however, it would be easy to create a microservices or just a customized executor to handle this kind of particular requirement. 
+In some of the use cases, several related jobs must be executed in sequence or a pre-defined order. It might be too much for the scheduler to handle this at the injection phase; however, it would be easy to create microservices or just a customized executor to handle this kind of particular requirement. 
 
 ##### Logging, Tracing and Auditing
 
-The entire inject/execute chain is transactional and the status must be updated once the job is executed successfully or failed to close the loop. We also need to provide a dashboard to give the user an interface to monitor and report the scheduler activities. 
-
+The entire inject/execute chain is transactional, and the status must be updated once the job is executed to close the loop. We also need to provide a dashboard to enable the user to monitor and report the scheduler's activities. 
 
 ##### File Watcher Injector
 
-For most of the enterprise schedulers which are based on batch jobs, we need to support the smooth migration. That means we need to have a special injector that can monitor one or more specific directories in the filesystem and pick up a file that contains a list of tasks. We need to define a standard format for the file and provide examples for convertor implementation that can be easily injected with service.yml config. Eventually, the events will be injected to the Kafka input topic through Kafka producer or a REST API. This particular injector can be built as a light-4j microservice or a daemon process. 
-
+For most enterprise schedulers based on batch jobs, we need to support smooth migration. That means we need to have a special injector that can monitor specific directories in the filesystem and pick up a file containing a list of tasks. We need to define a standard format for the file and provide examples for convertor implementation that can be easily injected with service.yml config. Eventually, the events will be injected into the Kafka input topic through Kafka producer or a REST API. This particular injector can be built as a light-4j microservice or a daemon process. 
 
 ### Build and Start
 
-The scaffolded project contains a single module. A fat jar server.jar will be generated in target directory after running the build command below.
+
+To start the server locally, you need to have Kafka Confluent locally with input and output topics created. For more info about starting Confluent, please refer to this [doc](https://doc.networknt.com/tutorial/kafka-sidecar/confluent-local/). 
+
+The project contains a single module. A fat jar server.jar will be generated in the target directory after running the build command below.
 
 ```
 ./mvnw clean install -Prelease
 ```
 
-With the fatjar in the server/target directory, you can start the server with the following command.
+With the fatjar in the target directory, you can start the server with the following command.
 
 ```
-java -jar server/target/server.jar
+java -jar target/light-scheduler.jar
 ```
 
 To speed up the test, you can avoid the fat jar generation and start the server from Maven.
@@ -92,8 +89,28 @@ To speed up the test, you can avoid the fat jar generation and start the server 
 ./mvnw clean install exec:exec
 ```
 
+The above command line will start a single node with the default configuration. To start a three-node cluster locally, you can run the following three command lines in three terminals. 
 
+Node1 
 
+```
+java -Dlight-4j-config-dir=config/node1 -jar target/light-scheduler.jar
+
+```
+
+Node2
+
+```
+java -Dlight-4j-config-dir=config/node2 -jar target/light-scheduler.jar
+
+```
+
+Node3
+
+```
+java -Dlight-4j-config-dir=config/node3 -jar target/light-scheduler.jar
+
+```
 
 ### Test
 
@@ -181,5 +198,5 @@ For your API, you need to change the path to match your specifications.
 
 ### Tutorial
 
-To explore more features, please visit the [petstore tutorial](https://doc.networknt.com/tutorial/rest/openapi/petstore/).
+To explore more features, please visit the [light-scheduler tutorial](https://doc.networknt.com/tutorial/scheduler/).
 

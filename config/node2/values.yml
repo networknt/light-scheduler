@@ -1,0 +1,13 @@
+# server configuration
+server.httpsPort: 8402
+
+# producer format configuration
+kafka-producer.bootstrap.servers: broker:29092
+kafka-producer.schema.registry.url: http://schema-registry:8081
+kafka-producer.keyFormat: avro
+kafka-producer.valueFormat: avro
+
+# streams configuration
+kafka-streams.bootstrap.servers: broker:29092
+kafka-streams.schema.registry.url: http://schema-registry:8081
+kafka-streams.cleanUp: false
