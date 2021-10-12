@@ -1,0 +1,40 @@
+---
+version: '2'
+services:
+  scheduler-node1:
+    image: networknt/light-scheduler:2.0.32
+    volumes:
+      - ./config/node1:/config
+    ports:
+      - 8401:8401
+    hostname: scheduler-node1
+    container_name: scheduler-node1
+    networks:
+      - localnet
+
+  scheduler-node2:
+    image: networknt/light-scheduler:2.0.32
+    volumes:
+      - ./config/node2:/config
+    ports:
+      - 8402:8402
+    hostname: scheduler-node2
+    container_name: scheduler-node2
+    networks:
+      - localnet
+
+  scheduler-node3:
+    image: networknt/light-scheduler:2.0.32
+    volumes:
+      - ./config/node3:/config
+    ports:
+      - 8403:8403
+    hostname: scheduler-node3
+    container_name: scheduler-node3
+    networks:
+      - localnet
+
+networks:
+  localnet:
+    # driver: bridge
+    external: true
