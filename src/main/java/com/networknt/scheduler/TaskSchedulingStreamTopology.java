@@ -4,7 +4,6 @@ import com.networknt.config.Config;
 import com.networknt.kafka.common.KafkaStreamsConfig;
 import com.networknt.service.SingletonServiceFactory;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
-import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
@@ -15,11 +14,6 @@ import org.apache.kafka.streams.state.*;
 import com.networknt.scheduler.transformer.TaskSchedulingTransformerSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
 
 public class TaskSchedulingStreamTopology {
     private final static Logger logger = LoggerFactory.getLogger(TaskSchedulingStreamTopology.class);
