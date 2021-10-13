@@ -2,6 +2,8 @@ package com.networknt.scheduler;
 
 import com.networknt.config.Config;
 import com.networknt.kafka.common.KafkaStreamsConfig;
+import com.networknt.service.SingletonServiceFactory;
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -51,13 +53,13 @@ public class TaskSchedulingStreamTopology {
     }
 
     private static SpecificAvroSerde<TaskDefinitionKey> getTaskDefinitionKeySpecificAvroSerde() {
-        final SpecificAvroSerde<TaskDefinitionKey> changeEventSpecificAvroSerde = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<TaskDefinitionKey> changeEventSpecificAvroSerde = new SpecificAvroSerde<>(SingletonServiceFactory.getBean(SchemaRegistryClient.class));
         changeEventSpecificAvroSerde.configure(streamsConfig.getProperties(), true);
         return changeEventSpecificAvroSerde;
     }
 
     private static SpecificAvroSerde<TaskDefinition> getTaskDefinitionSpecificAvroSerde() {
-        final SpecificAvroSerde<TaskDefinition> changeEventSpecificAvroSerde = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<TaskDefinition> changeEventSpecificAvroSerde = new SpecificAvroSerde<>(SingletonServiceFactory.getBean(SchemaRegistryClient.class));
         changeEventSpecificAvroSerde.configure(streamsConfig.getProperties(), false);
         return changeEventSpecificAvroSerde;
     }
