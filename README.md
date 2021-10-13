@@ -89,27 +89,11 @@ To speed up the test, you can avoid the fat jar generation and start the server 
 ./mvnw clean install exec:exec
 ```
 
-The above command line will start a single node with the default configuration. To start a three-node cluster locally, you can run the following three command lines in three terminals. 
+The above command line will start a single node with the default configuration. To start a three-node cluster locally, you can run the following command line. 
 
-Node1 
-
-```
-java -Dlight-4j-config-dir=config/node1 -jar target/light-scheduler.jar
 
 ```
-
-Node2
-
-```
-java -Dlight-4j-config-dir=config/node2 -jar target/light-scheduler.jar
-
-```
-
-Node3
-
-```
-java -Dlight-4j-config-dir=config/node3 -jar target/light-scheduler.jar
-
+docker-compose up
 ```
 
 ### Test
