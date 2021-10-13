@@ -10,4 +10,5 @@ kafka-producer.valueFormat: avro
 # streams configuration
 kafka-streams.bootstrap.servers: broker:29092
 kafka-streams.schema.registry.url: http://schema-registry:8081
+kafka-streams.application.id: light-scheduler
 kafka-streams.cleanUp: false
