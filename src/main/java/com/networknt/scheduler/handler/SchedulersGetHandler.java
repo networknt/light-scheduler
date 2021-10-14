@@ -3,7 +3,7 @@ package com.networknt.scheduler.handler;
 import com.networknt.client.Http2Client;
 import com.networknt.config.Config;
 import com.networknt.config.JsonMapper;
-import com.networknt.kafka.common.converter.AvroConverter;
+import com.networknt.kafka.common.AvroConverter;
 import com.networknt.monad.Failure;
 import com.networknt.monad.Result;
 import com.networknt.monad.Success;
@@ -50,7 +50,6 @@ public class SchedulersGetHandler implements LightHttpHandler {
     static Http2Client client = Http2Client.getInstance();
     static Map<String, ClientConnection> connCache = new ConcurrentHashMap<>();
     static final String GENERIC_EXCEPTION = "ERR10014";
-    AvroConverter converter = new AvroConverter();
 
     public SchedulersGetHandler () {
     }
@@ -119,8 +118,7 @@ public class SchedulersGetHandler implements LightHttpHandler {
                 if(unit != null && !value.getFrequency().getTimeUnit().equals(TimeUnit.valueOf(unit))) {
                     continue;
                 }
-
-                definitions.add(JsonMapper.string2Map(converter.toJson(value).getJson().toString()));
+                definitions.add(JsonMapper.string2Map(AvroConverter.toJson(value, false)));
             }
         }
         if(logger.isDebugEnabled()) logger.debug("The number of definitions at local is " + definitions.size());
