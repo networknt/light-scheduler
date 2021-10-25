@@ -51,10 +51,6 @@ public class SchedulersGetHandler implements LightHttpHandler {
     static Map<String, ClientConnection> connCache = new ConcurrentHashMap<>();
     static final String GENERIC_EXCEPTION = "ERR10014";
 
-    public SchedulersGetHandler () {
-    }
-
-    
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
         String host = null;
@@ -75,28 +71,31 @@ public class SchedulersGetHandler implements LightHttpHandler {
         if(local) {
             exchange.getResponseSender().send(JsonMapper.toJson(getLocalDefinitions(host, name, unit)));
         } else {
-            KafkaStreams kafkaStreams = SchedulerStartupHook.streams.getKafkaStreams();
-            QueryableStoreType<ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition>> queryableStoreType = QueryableStoreTypes.keyValueStore();
-            Collection<StreamsMetadata> metadataList = kafkaStreams.allMetadata();
-            List<Map<String, Object>> definitions = new ArrayList<>();
-            for (StreamsMetadata metadata : metadataList) {
-                if (logger.isDebugEnabled()) logger.debug("found one address in the collection " + metadata.host() + ":" + metadata.port());
-                String url = "https://" + metadata.host() + ":" + metadata.port();
-                if (NetUtils.getLocalAddressByDatagram().equals(metadata.host()) && Server.getServerConfig().getHttpsPort() == metadata.port()) {
-                    definitions.addAll(getLocalDefinitions(host, name, unit));
-                } else {
-                    // remote store through API access.
-                    Result<String> resultDefinitions = getTaskDefinitions(exchange, url, host, name, unit);
-                    if (resultDefinitions.isSuccess()) {
-                        definitions.addAll(JsonMapper.string2List(resultDefinitions.getResult()));
-                    }
-                }
-            }
-            exchange.getResponseSender().send(JsonMapper.toJson(definitions));
+            exchange.getResponseSender().send(JsonMapper.toJson(getClusterDefinition(exchange, host, name, unit)));
         }
     }
 
-    private List<Map<String, Object>> getLocalDefinitions(String host, String name, String unit) {
+    public static List<Map<String, Object>> getClusterDefinition(HttpServerExchange exchange, String host, String name, String unit) {
+        KafkaStreams kafkaStreams = SchedulerStartupHook.streams.getKafkaStreams();
+        Collection<StreamsMetadata> metadataList = kafkaStreams.allMetadata();
+        List<Map<String, Object>> definitions = new ArrayList<>();
+        for (StreamsMetadata metadata : metadataList) {
+            if (logger.isDebugEnabled()) logger.debug("found one address in the collection " + metadata.host() + ":" + metadata.port());
+            String url = "https://" + metadata.host() + ":" + metadata.port();
+            if (NetUtils.getLocalAddressByDatagram().equals(metadata.host()) && Server.getServerConfig().getHttpsPort() == metadata.port()) {
+                definitions.addAll(getLocalDefinitions(host, name, unit));
+            } else {
+                // remote store through API access.
+                Result<String> resultDefinitions = getTaskDefinitions(exchange, url, host, name, unit);
+                if (resultDefinitions.isSuccess()) {
+                    definitions.addAll(JsonMapper.string2List(resultDefinitions.getResult()));
+                }
+            }
+        }
+        return definitions;
+    }
+
+    public static List<Map<String, Object>> getLocalDefinitions(String host, String name, String unit) {
         List<Map<String, Object>> definitions = new ArrayList<>();
         // local store access based on the filters.
         KafkaStreams kafkaStreams = SchedulerStartupHook.streams.getKafkaStreams();
@@ -135,11 +134,11 @@ public class SchedulersGetHandler implements LightHttpHandler {
      * @param unit unit filter
      * @return Result the definitions in JSON
      */
-    public static Result<String> getTaskDefinitions(HttpServerExchange exchange, String url, String host, String name, String unit) {
+    private static Result<String> getTaskDefinitions(HttpServerExchange exchange, String url, String host, String name, String unit) {
         return callQueryExchangeUrl(exchange, url, host, name, unit);
     }
 
-    public static Result<String> callQueryExchangeUrl(HttpServerExchange exchange, String url, String host, String name, String unit) {
+    private static Result<String> callQueryExchangeUrl(HttpServerExchange exchange, String url, String host, String name, String unit) {
         Result<String> result = null;
         try {
             ClientConnection conn = connCache.get(url);
