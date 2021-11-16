@@ -94,7 +94,7 @@ public abstract class AbstractTaskHandler implements TaskHandler, Punctuator {
                 long freq = TimeUtil.oneTimeUnitMillisecond(timeUnit) * next.value.getFrequency().getTime();
                 if(logger.isTraceEnabled()) logger.trace("start timestamp = " + start + " current timestamp = " + current + " period millisecond = " + freq);
                 if((current-start) % freq == 0) {
-                    if(logger.isInfoEnabled()) logger.info("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
+                    if(logger.isDebugEnabled()) logger.debug("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
                     // set the start timestamp to give executor detect the task age for skipping.
                     next.value.setStart(current);
                     this.processorContext.forward(next.key, next.value);
