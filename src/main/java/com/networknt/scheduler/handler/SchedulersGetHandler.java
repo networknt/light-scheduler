@@ -22,6 +22,7 @@ import io.undertow.util.Methods;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StoreQueryParameters;
+import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.state.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ public class SchedulersGetHandler implements LightHttpHandler {
     static Http2Client client = Http2Client.getInstance();
     static Map<String, ClientConnection> connCache = new ConcurrentHashMap<>();
     static final String GENERIC_EXCEPTION = "ERR10014";
+    static final long WAIT_THRESHOLD = 30000;
 
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
@@ -103,7 +105,25 @@ public class SchedulersGetHandler implements LightHttpHandler {
         for (String storeName : SchedulerConstants.TASK_STORES) {
             StoreQueryParameters<ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition>> sqp = StoreQueryParameters.fromNameAndType(storeName, queryableStoreType);
             ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition> store = kafkaStreams.store(sqp);
-            KeyValueIterator<TaskDefinitionKey, TaskDefinition> iterator = store.all();
+
+            KeyValueIterator<TaskDefinitionKey, TaskDefinition> iterator = null;
+            long timeout = System.currentTimeMillis() + WAIT_THRESHOLD;
+            do {
+                if (System.currentTimeMillis() >= timeout) {
+                    break;
+                }
+                try {
+                    iterator = store.all();
+                } catch (InvalidStateStoreException e) {
+                    try {
+                        logger.debug(e.getMessage());
+                        Thread.sleep(100L);
+                    } catch (InterruptedException interruptedException) {
+                        logger.error(interruptedException.getMessage(), interruptedException);
+                    }
+                }
+            } while (iterator == null);
+
             while(iterator.hasNext()) {
                 KeyValue<TaskDefinitionKey, TaskDefinition> keyValue = iterator.next();
                 TaskDefinitionKey key = keyValue.key;
