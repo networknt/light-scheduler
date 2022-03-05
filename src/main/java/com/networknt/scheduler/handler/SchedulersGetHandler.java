@@ -106,8 +106,26 @@ public class SchedulersGetHandler implements LightHttpHandler {
 
             StoreQueryParameters<ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition>> sqp = StoreQueryParameters.fromNameAndType(storeName, queryableStoreType);
             ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition> store = kafkaStreams.store(sqp);
-            KeyValueIterator<TaskDefinitionKey, TaskDefinition> iterator = (KeyValueIterator<TaskDefinitionKey, TaskDefinition>) SchedulerStartupHook.streams.getAllKafkaValue(store);
-            
+            KeyValueIterator<TaskDefinitionKey, TaskDefinition> iterator = null;
+            boolean storeMoved;
+            long timeout = System.currentTimeMillis() + WAIT_THRESHOLD;
+            do {
+                if (System.currentTimeMillis() >= timeout) {
+                    if(logger.isDebugEnabled()) logger.debug("Timeout period is passed after 30 seconds.");
+                    break;
+                }
+                try {
+                    iterator = store.all();
+                    storeMoved = false;
+                } catch (InvalidStateStoreException e) {
+                    storeMoved = true;
+                    try {
+                        logger.debug(e.getMessage());
+                        Thread.sleep(100L);
+                    } catch (InterruptedException interruptedException) {}
+                }
+            } while (storeMoved);
+
             while(iterator.hasNext()) {
                 KeyValue<TaskDefinitionKey, TaskDefinition> keyValue = iterator.next();
                 TaskDefinitionKey key = keyValue.key;
