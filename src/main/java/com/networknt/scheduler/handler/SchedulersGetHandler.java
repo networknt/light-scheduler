@@ -108,7 +108,6 @@ public class SchedulersGetHandler implements LightHttpHandler {
             StoreQueryParameters<ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition>> sqp = StoreQueryParameters.fromNameAndType(storeName, queryableStoreType);
             ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition> store = kafkaStreams.store(sqp);
             KeyValueIterator<TaskDefinitionKey, TaskDefinition> iterator = (KeyValueIterator<TaskDefinitionKey, TaskDefinition>) SchedulerStartupHook.streams.getAllKafkaValue(store);
-            
             while(iterator.hasNext()) {
                 KeyValue<TaskDefinitionKey, TaskDefinition> keyValue = iterator.next();
                 TaskDefinitionKey key = keyValue.key;
