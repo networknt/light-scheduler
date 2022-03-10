@@ -99,6 +99,7 @@ public class SchedulersGetHandler implements LightHttpHandler {
 
     public static List<Map<String, Object>> getLocalDefinitions(String host, String name, String unit) {
         List<Map<String, Object>> definitions = new ArrayList<>();
+
         // local store access based on the filters.
         KafkaStreams kafkaStreams = SchedulerStartupHook.streams.getKafkaStreams();
         QueryableStoreType<ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition>> queryableStoreType = QueryableStoreTypes.keyValueStore();
@@ -106,26 +107,7 @@ public class SchedulersGetHandler implements LightHttpHandler {
 
             StoreQueryParameters<ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition>> sqp = StoreQueryParameters.fromNameAndType(storeName, queryableStoreType);
             ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition> store = kafkaStreams.store(sqp);
-            KeyValueIterator<TaskDefinitionKey, TaskDefinition> iterator = null;
-            boolean storeMoved;
-            long timeout = System.currentTimeMillis() + WAIT_THRESHOLD;
-            do {
-                if (System.currentTimeMillis() >= timeout) {
-                    if(logger.isDebugEnabled()) logger.debug("Timeout period is passed after 30 seconds.");
-                    break;
-                }
-                try {
-                    iterator = store.all();
-                    storeMoved = false;
-                } catch (InvalidStateStoreException e) {
-                    storeMoved = true;
-                    try {
-                        logger.debug(e.getMessage());
-                        Thread.sleep(100L);
-                    } catch (InterruptedException interruptedException) {}
-                }
-            } while (storeMoved);
-
+            KeyValueIterator<TaskDefinitionKey, TaskDefinition> iterator = (KeyValueIterator<TaskDefinitionKey, TaskDefinition>) SchedulerStartupHook.streams.getAllKafkaValue(store);
             while(iterator.hasNext()) {
                 KeyValue<TaskDefinitionKey, TaskDefinition> keyValue = iterator.next();
                 TaskDefinitionKey key = keyValue.key;
@@ -141,6 +123,7 @@ public class SchedulersGetHandler implements LightHttpHandler {
                 }
                 definitions.add(JsonMapper.string2Map(AvroConverter.toJson(value, false)));
             }
+            iterator.close();
         }
         if(logger.isDebugEnabled()) logger.debug("The number of definitions at local is " + definitions.size());
         return definitions;
