@@ -99,6 +99,7 @@ public class SchedulersGetHandler implements LightHttpHandler {
 
     public static List<Map<String, Object>> getLocalDefinitions(String host, String name, String unit) {
         List<Map<String, Object>> definitions = new ArrayList<>();
+
         // local store access based on the filters.
         KafkaStreams kafkaStreams = SchedulerStartupHook.streams.getKafkaStreams();
         QueryableStoreType<ReadOnlyKeyValueStore<TaskDefinitionKey, TaskDefinition>> queryableStoreType = QueryableStoreTypes.keyValueStore();
@@ -123,6 +124,7 @@ public class SchedulersGetHandler implements LightHttpHandler {
                 }
                 definitions.add(JsonMapper.string2Map(AvroConverter.toJson(value, false)));
             }
+            iterator.close();
         }
         if(logger.isDebugEnabled()) logger.debug("The number of definitions at local is " + definitions.size());
         return definitions;
