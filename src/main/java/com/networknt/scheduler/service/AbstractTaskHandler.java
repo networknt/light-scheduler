@@ -84,24 +84,26 @@ public abstract class AbstractTaskHandler implements TaskHandler, Punctuator {
 
     @Override
     public void punctuate(long l) {
-        final KeyValueIterator<TaskDefinitionKey, TaskDefinition> all = taskDefinitionStore.all();
-        while (all.hasNext()) {
-            final KeyValue<TaskDefinitionKey, TaskDefinition> next = all.next();
-            // round both start and current to the next TimeUnit.
-            long start = TimeUtil.nextStartTimestamp(TimeUnit.valueOf(next.value.getFrequency().getTimeUnit().name()), next.value.getStart());
-            long current = TimeUtil.nextStartTimestamp(TimeUnit.valueOf(next.value.getFrequency().getTimeUnit().name()), l);
-            if(current - start > 0L) {
-                long freq = TimeUtil.oneTimeUnitMillisecond(timeUnit) * next.value.getFrequency().getTime();
-                if(logger.isTraceEnabled()) logger.trace("start timestamp = " + start + " current timestamp = " + current + " period millisecond = " + freq);
-                if((current-start) % freq == 0) {
-                    if(logger.isDebugEnabled()) logger.debug("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
-                    // set the start timestamp to give executor detect the task age for skipping.
-                    next.value.setStart(current);
-                    this.processorContext.forward(next.key, next.value);
+        try(final KeyValueIterator<TaskDefinitionKey, TaskDefinition> all = taskDefinitionStore.all()) {
+            while (all.hasNext()) {
+                final KeyValue<TaskDefinitionKey, TaskDefinition> next = all.next();
+                // round both start and current to the next TimeUnit.
+                long start = TimeUtil.nextStartTimestamp(TimeUnit.valueOf(next.value.getFrequency().getTimeUnit().name()), next.value.getStart());
+                long current = TimeUtil.nextStartTimestamp(TimeUnit.valueOf(next.value.getFrequency().getTimeUnit().name()), l);
+                if (current - start > 0L) {
+                    long freq = TimeUtil.oneTimeUnitMillisecond(timeUnit) * next.value.getFrequency().getTime();
+                    if (logger.isTraceEnabled())
+                        logger.trace("start timestamp = " + start + " current timestamp = " + current + " period millisecond = " + freq);
+                    if ((current - start) % freq == 0) {
+                        if (logger.isDebugEnabled())
+                            logger.debug("{} - Triggering task Key: {}, Value: {}", timeUnit, next.key, next.value);
+                        // set the start timestamp to give executor detect the task age for skipping.
+                        next.value.setStart(current);
+                        this.processorContext.forward(next.key, next.value);
+                    }
                 }
             }
         }
-        all.close();
     }
 }
 
