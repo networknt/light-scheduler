@@ -1,5 +1,17 @@
 # Change Log
 
+## [2.1.1](https://github.com/networknt/light-scheduler/tree/2.1.1) (2022-04-26)
+
+
+**Merged pull requests:**
+
+
+- fixes \#79 update the KeyValueIterator into a try with resource block … [\#80](https://github.com/networknt/light-scheduler/pull/80) ([stevehu](https://github.com/stevehu))
+- Feature/kafka thread stream fix [\#78](https://github.com/networknt/light-scheduler/pull/78) ([KalevGonvick](https://github.com/KalevGonvick))
+- fixes \#76 use the application specific logic to get the iterator as t… [\#77](https://github.com/networknt/light-scheduler/pull/77) ([stevehu](https://github.com/stevehu))
+- fixes \#74 update config.yml and sanitizer.yml with the latest format [\#75](https://github.com/networknt/light-scheduler/pull/75) ([stevehu](https://github.com/stevehu))
+- Feature/kafka thread stream fix [\#73](https://github.com/networknt/light-scheduler/pull/73) ([KalevGonvick](https://github.com/KalevGonvick))
+- Added Kafka Thread Stream Fix [\#72](https://github.com/networknt/light-scheduler/pull/72) ([KalevGonvick](https://github.com/KalevGonvick))
 ## [2.1.0](https://github.com/networknt/light-scheduler/tree/2.1.0) (2022-02-27)
 
 
