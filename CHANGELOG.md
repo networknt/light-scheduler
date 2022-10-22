@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.1.2](https://github.com/networknt/light-scheduler/tree/2.1.2) (2022-10-22)
+
+
+**Merged pull requests:**
+
+
+- fixes \#81 update key test case to meet the requirement for multiple s… [\#82](https://github.com/networknt/light-scheduler/pull/82) ([stevehu](https://github.com/stevehu))
 ## [2.1.1](https://github.com/networknt/light-scheduler/tree/2.1.1) (2022-04-26)
 
 
