@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.1.20](https://github.com/networknt/light-scheduler/tree/2.1.20) (2023-06-17)
+
+
+**Merged pull requests:**
+
+
+- fixes \#85 clean up the internal configuration with only handler.yml a… [\#86](https://github.com/networknt/light-scheduler/pull/86) ([stevehu](https://github.com/stevehu))
+- fixes \#83 update pom.xml for release [\#84](https://github.com/networknt/light-scheduler/pull/84) ([stevehu](https://github.com/stevehu))
 ## [2.1.19](https://github.com/networknt/light-scheduler/tree/2.1.19) (2023-06-05)
 
 
