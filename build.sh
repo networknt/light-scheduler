@@ -1,5 +1,13 @@
-
 #!/bin/bash
+
+#
+# Purpose: Publish docker image new tag to docker hub.
+#
+# Author:  Dinesh Alapati, dine.alapati@gmail.com
+#
+# Parameters:
+#   $1:  version
+#
 
 set -ex
 
@@ -20,9 +28,7 @@ showHelp() {
 
 build() {
     echo "Building ..."
-    
-    ./mvnw clean install -Prelease
-    
+    mvn clean install
     echo "Successfully built!"
 }
 
