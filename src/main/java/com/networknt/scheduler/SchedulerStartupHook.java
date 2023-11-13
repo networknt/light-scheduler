@@ -2,6 +2,7 @@ package com.networknt.scheduler;
 
 import com.networknt.kafka.producer.NativeLightProducer;
 import com.networknt.server.Server;
+import com.networknt.server.ServerConfig;
 import com.networknt.server.StartupHookProvider;
 import com.networknt.service.SingletonServiceFactory;
 import com.networknt.utility.NetUtils;
@@ -23,7 +24,7 @@ public class SchedulerStartupHook implements StartupHookProvider {
         producer = lightProducer.getProducer();
 
         // start the scheduler streams to generate execution task for executors
-        int port = Server.getServerConfig().getHttpsPort();
+        int port = ServerConfig.getInstance().getHttpsPort();
         String ip = NetUtils.getLocalAddressByDatagram();
         logger.info("ip = " + ip + " port = " + port);
         streams = new SchedulerStreams();

@@ -10,6 +10,7 @@ import com.networknt.monad.Success;
 import com.networknt.scheduler.*;
 import com.networknt.handler.LightHttpHandler;
 import com.networknt.server.Server;
+import com.networknt.server.ServerConfig;
 import com.networknt.status.Status;
 import com.networknt.utility.NetUtils;
 import io.undertow.UndertowOptions;
@@ -84,7 +85,7 @@ public class SchedulersGetHandler implements LightHttpHandler {
         for (StreamsMetadata metadata : metadataList) {
             if (logger.isDebugEnabled()) logger.debug("found one address in the collection " + metadata.host() + ":" + metadata.port());
             String url = "https://" + metadata.host() + ":" + metadata.port();
-            if (NetUtils.getLocalAddressByDatagram().equals(metadata.host()) && Server.getServerConfig().getHttpsPort() == metadata.port()) {
+            if (NetUtils.getLocalAddressByDatagram().equals(metadata.host()) && ServerConfig.getInstance().getHttpsPort() == metadata.port()) {
                 definitions.addAll(getLocalDefinitions(host, name, unit));
             } else {
                 // remote store through API access.
