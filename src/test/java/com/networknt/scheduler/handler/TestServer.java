@@ -26,7 +26,7 @@ public class TestServer extends ExternalResource {
 
 
     public ServerConfig getServerConfig() {
-        return Server.getServerConfig();
+        return ServerConfig.getInstance();
     }
 
     @Override
