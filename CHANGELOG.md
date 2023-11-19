@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.1.29](https://github.com/networknt/light-scheduler/tree/2.1.29) (2023-11-19)
+
+
+**Merged pull requests:**
+
+
+- fixes \#94 refactor ServerConfig getInstance [\#95](https://github.com/networknt/light-scheduler/pull/95) ([stevehu](https://github.com/stevehu))
+- fixes \#91 add addDefaultImplementationEntries to maven jar plugin [\#92](https://github.com/networknt/light-scheduler/pull/92) ([stevehu](https://github.com/stevehu))
 ## [2.1.28](https://github.com/networknt/light-scheduler/tree/2.1.28) (2023-10-24)
 
 
