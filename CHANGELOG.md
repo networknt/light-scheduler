@@ -7,6 +7,8 @@
 
 
 - fixes \#97 update the Dockerfile to change the base image [\#98](https://github.com/networknt/light-scheduler/pull/98) ([stevehu](https://github.com/stevehu))
+
+
 ## [2.1.30](https://github.com/networknt/light-scheduler/tree/2.1.30) (2023-11-21)
 
 
