@@ -1,9 +1,18 @@
 # Change Log
 
-## [2.1.30](https://github.com/networknt/light-scheduler/tree/2.1.30) (2023-11-20)
+## [2.1.31](https://github.com/networknt/light-scheduler/tree/2.1.31) (2024-01-15)
 
 
 **Merged pull requests:**
+
+
+- fixes \#97 update the Dockerfile to change the base image [\#98](https://github.com/networknt/light-scheduler/pull/98) ([stevehu](https://github.com/stevehu))
+## [2.1.30](https://github.com/networknt/light-scheduler/tree/2.1.30) (2023-11-21)
+
+
+**Merged pull requests:**
+
+
 
 
 ## [2.1.29](https://github.com/networknt/light-scheduler/tree/2.1.29) (2023-11-19)
