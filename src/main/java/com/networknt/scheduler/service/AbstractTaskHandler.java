@@ -106,4 +106,3 @@ public abstract class AbstractTaskHandler implements TaskHandler, Punctuator {
         }
     }
 }
-
