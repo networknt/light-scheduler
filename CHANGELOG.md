@@ -8,6 +8,8 @@
 
 - [pre-commit.ci] pre-commit autoupdate [\#101](https://github.com/networknt/light-scheduler/pull/101) ([pre-commit-ci](https://github.com/apps/pre-commit-ci))
 - fixes \#99 add pre-commit hook and apply it [\#100](https://github.com/networknt/light-scheduler/pull/100) ([stevehu](https://github.com/stevehu))
+
+
 ## [2.1.31](https://github.com/networknt/light-scheduler/tree/2.1.31) (2024-01-16)
 
 
