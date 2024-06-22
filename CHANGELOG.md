@@ -7,6 +7,8 @@
 
 
 - [pre-commit.ci] pre-commit autoupdate [\#104](https://github.com/networknt/light-scheduler/pull/104) ([pre-commit-ci](https://github.com/apps/pre-commit-ci))
+
+
 ## [2.1.33](https://github.com/networknt/light-scheduler/tree/2.1.33) (2024-03-31)
 
 
