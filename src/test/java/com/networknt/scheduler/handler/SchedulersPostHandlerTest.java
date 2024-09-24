@@ -80,7 +80,7 @@ public class SchedulersPostHandlerTest {
         }
         String body = reference.get().getAttachment(Http2Client.RESPONSE_BODY);
         Optional<HeaderValues> contentTypeName = Optional.ofNullable(reference.get().getResponseHeaders().get(Headers.CONTENT_TYPE));
-        SchemaValidator schemaValidator = new SchemaValidator(OpenApiHandler.helper.openApi3);
+        SchemaValidator schemaValidator = new SchemaValidator(OpenApiHandler.helper.openApi3, false);
         ResponseValidator responseValidator = new ResponseValidator(schemaValidator);
         int statusCode = reference.get().getResponseCode();
         Status status;
