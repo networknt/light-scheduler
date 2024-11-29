@@ -30,9 +30,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git://github.com:networknt/light-scheduler.git</connection>
-        <developerConnection>scm:git://github.com:networknt/light-scheduler.git</developerConnection>
-        <url>https://github.com:networknt/light-scheduler.git</url>
+        <connection>scm:git://github.com:lightapi/light-scheduler.git</connection>
+        <developerConnection>scm:git://github.com:lightapi/light-scheduler.git</developerConnection>
+        <url>https://github.com:lightapi/light-scheduler.git</url>
     </scm>
 
     <distributionManagement>
